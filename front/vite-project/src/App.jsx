@@ -8,7 +8,7 @@ function App() {
       <header className="site-header">
         <div className="header-left">
           <a className="brand" href="#inicio" aria-label="Volver al inicio">
-            FUEGO<span>.</span>
+            CABEZAMOS<span>.</span>
           </a>
           <nav aria-label="Navegación principal">
             <a href="#inicio">Inicio</a>
@@ -26,10 +26,10 @@ function App() {
 
       <section className="artist-block block-light" id="inicio">
         <div className="block-copy">
-          <p className="eyebrow">Artista visual / 2026</p>
-          <h1>Todo lo que<br /><em>arde</em> deja una marca.</h1>
-          <p className="intro">Obra gráfica, calle y memoria reunidas en una misma frecuencia.</p>
-          <a className="outline-button" href="#obra">Explorar obra <span>↘</span></a>
+          <p className="eyebrow">CG SAMO / New Album</p>
+          <h1>HOMLESS<br /><em>AND</em> RAPERS</h1>
+          <p className="intro">Ven y has parte de nuestro equipo con los CABEZAMOS.</p>
+          <a className="outline-button" href="#obra">HAS TU CABEZAMO <span>↘</span></a>
         </div>
         <div className="image-window window-tall" role="img" aria-label="Fragmento del mural y obra del artista"></div>
         <span className="side-note">01 / manifiesto</span>

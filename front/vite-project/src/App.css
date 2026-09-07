@@ -51,7 +51,7 @@ main {
   /* Color que se ve si la imagen aún no ha cargado o no cubre una zona. */
   background-color: var(--paper);
   /* Capa de color semitransparente sobre el wallpaper para mejorar la lectura. */
-  background-image: linear-gradient(rgba(248, 236, 250, 0.68), rgba(248, 236, 250, 0.68)), var(--wallpaper);
+  background-image: linear-gradient(rgba(255, 196, 255, 0.68), rgba(249, 236, 193, 0.444)), var(--wallpaper);
   /* cover llena toda la pantalla; puede recortar un poco la imagen. */
   background-size: cover;
   /* Mantiene el fondo quieto mientras se desplaza la página en escritorio. */
@@ -64,7 +64,7 @@ main {
 .site-header {
   /* Tres zonas: contenido a la izquierda, logotipo al centro y menú a la derecha. */
   align-items: center;
-  display: grid;
+  /* display: ; */
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   /* Se coloca sobre el contenido y ocupa todo el ancho. */
   left: 0;
@@ -86,8 +86,8 @@ main {
 .brand span { color: #fe1500; }
 /* Espaciado flexible entre los enlaces del menú. */
 .site-header nav { display: flex; gap: clamp(18px, 3vw, 42px); }
-.site-header nav a { font-size: 0.63rem; letter-spacing: 0.13em; text-decoration: none; text-transform: uppercase; }
-.site-header nav a:hover { text-decoration: line-through; text-decoration-thickness: 2px; }
+.site-header nav a { font-size: 0.63rem; letter-spacing: 0.13em; text-decoration: none; text-transform: uppercase;  }
+.site-header nav a:hover { text-decoration: line-through; text-decoration-thickness: 2px; text-decoration-style: double; text-decoration-color: rgba(10, 10, 10, 0.232); }
 /* Logotipo central: object-fit evita que la imagen se deforme. */
 .header-logo {
   display: block;
@@ -95,7 +95,7 @@ main {
   line-height: 0;
   /* Cambia estos tres valores para controlar el logo en PC:
      minimo, tamano ideal y maximo. */
-  width: clamp(170px, 18vw, 300px);
+  width: clamp(290px, 18vw, 300px);
 }
 .header-logo img {
   display: block;
@@ -106,12 +106,12 @@ main {
 /* Al pasar el ratón se invierten y desplazan los tonos para crear el efecto psicodélico. */
 .header-logo:hover img,
 .header-logo:focus-visible img {
-  filter: invert(1) saturate(3.2) hue-rotate(145deg) contrast(1.25);
-  transform: scale(1.08) rotate(-2deg);
+  filter: invert(1) saturate(7.2) hue-rotate(130deg) contrast(1.25);
+  transform: scale(1.30) rotate(-10deg);
 }
 /* El menú se representa con tres líneas, sin depender de una imagen. */
-.menu-link { display: grid; gap: 4px; justify-self: end; width: 20px; }
-.menu-link span { background: currentColor; display: block; height: 1px; width: 100%; }
+/* .menu-link { display: grid; gap: 4px; justify-self: end; width: 20px; }
+.menu-link span { background: currentColor; display: block; height: 1px; width: 100%; } */
 
 /* ===== Estructura común de cada uno de los 3 bloques ===== */
 .artist-block {
