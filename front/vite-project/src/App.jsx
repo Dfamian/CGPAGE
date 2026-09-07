@@ -1,121 +1,61 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
+import wallpaper from './assets/walpaper jpg.jpg'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+    <main style={{ '--wallpaper': `url("${wallpaper}")` }}>
+      <header className="site-header">
+        <a className="brand" href="#inicio" aria-label="Volver al inicio">
+          FUEGO<span>.</span>
+        </a>
+        <nav aria-label="Navegación principal">
+          <a href="#inicio">Inicio</a>
+          <a href="#obra">Obra</a>
+          <a href="#contacto">Contacto</a>
+        </nav>
+        <a className="menu-link" href="#contacto" aria-label="Abrir contacto">
+          <span></span><span></span><span></span>
+        </a>
+      </header>
+
+      <section className="artist-block block-light" id="inicio">
+        <div className="block-copy">
+          <p className="eyebrow">Artista visual / 2026</p>
+          <h1>Todo lo que<br /><em>arde</em> deja una marca.</h1>
+          <p className="intro">Obra gráfica, calle y memoria reunidas en una misma frecuencia.</p>
+          <a className="outline-button" href="#obra">Explorar obra <span>↘</span></a>
         </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
+        <div className="image-window window-tall" role="img" aria-label="Fragmento del mural y obra del artista"></div>
+        <span className="side-note">01 / manifiesto</span>
       </section>
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+      <section className="artist-block block-dark" id="obra">
+        <div className="image-window window-wide" role="img" aria-label="Detalle de una obra urbana"></div>
+        <div className="block-copy">
+          <p className="eyebrow">Selección / 01—03</p>
+          <h2>La ciudad<br /><em>también sueña.</em></h2>
+          <p className="intro">Piezas nacidas entre el ruido, los viajes y las paredes que todavía tienen algo que decir.</p>
+          <a className="outline-button" href="#contacto">Ver proyectos <span>↗</span></a>
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
+        <span className="side-note">02 / archivo vivo</span>
       </section>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+      <section className="artist-block block-light block-contact" id="contacto">
+        <div className="block-copy">
+          <p className="eyebrow">Disponible para colaborar</p>
+          <h2>Hagamos algo<br /><em>inolvidable.</em></h2>
+          <p className="intro">Murales, portadas, dirección de arte y proyectos que necesiten una voz sin filtro.</p>
+          <a className="outline-button dark-button" href="mailto:hola@fuego.studio">Escribir ahora <span>↗</span></a>
+        </div>
+        <div className="contact-stamp" aria-hidden="true">F<br />/U<br />E<br />G<br />O</div>
+        <span className="side-note">03 / contacto</span>
+      </section>
+
+      <footer>
+        <span>FUEGO. — Estudio independiente</span>
+        <span>Instagram / Behance / Mail</span>
+      </footer>
+    </main>
   )
 }
 
