@@ -1,18 +1,24 @@
 import wallpaper from './assets/walpaper jpg.jpg'
+import lettersLogo from './assets/Letrass.PNG'
 import './App.css'
 
 function App() {
   return (
     <main style={{ '--wallpaper': `url("${wallpaper}")` }}>
       <header className="site-header">
-        <a className="brand" href="#inicio" aria-label="Volver al inicio">
-          FUEGO<span>.</span>
+        <div className="header-left">
+          <a className="brand" href="#inicio" aria-label="Volver al inicio">
+            FUEGO<span>.</span>
+          </a>
+          <nav aria-label="Navegación principal">
+            <a href="#inicio">Inicio</a>
+            <a href="#obra">Obra</a>
+            <a href="#contacto">Contacto</a>
+          </nav>
+        </div>
+        <a className="header-logo" href="#inicio" aria-label="Volver al inicio">
+          <img src={lettersLogo} alt="Fuego" />
         </a>
-        <nav aria-label="Navegación principal">
-          <a href="#inicio">Inicio</a>
-          <a href="#obra">Obra</a>
-          <a href="#contacto">Contacto</a>
-        </nav>
         <a className="menu-link" href="#contacto" aria-label="Abrir contacto">
           <span></span><span></span><span></span>
         </a>

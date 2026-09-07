@@ -1,85 +1,184 @@
+/*
+  GUIA DE EDICION
+
+  Colores: cambia --ink, --paper y --acid dentro de main. --ink es el oscuro,
+  --paper el fondo claro y --acid el acento amarillo.
+
+  Tamano: px es fijo; % depende del elemento padre; vw depende del ancho de la
+  ventana; vh depende de su alto. clamp(minimo, preferido, maximo) permite que
+  un valor crezca en pantallas grandes sin hacerse demasiado pequeno o grande.
+
+  Distribucion: display: grid crea columnas y filas; grid-template-columns define
+  sus proporciones. display: flex distribuye elementos en una fila o columna.
+  flex-direction: row usa una fila y column apila los elementos verticalmente.
+  gap separa elementos; justify-content reparte en el eje principal y align-items
+  alinea en el eje contrario. Valores utiles: center, flex-start, flex-end y
+  space-between.
+
+  Espacio: padding crea espacio dentro de un elemento; margin crea espacio fuera.
+  En padding: 20px 30px significa arriba/abajo 20px y lados 30px.
+
+  Fondos: background-size: cover llena la zona y recorta parte de la imagen;
+  contain muestra la imagen completa y puede dejar espacios. background-position
+  acepta center, top, bottom, left, right o porcentajes como 70% 20%.
+
+  Posicion: relative mantiene el elemento en el flujo; absolute permite colocar
+  un hijo respecto a ese elemento. fixed queda pegado a la ventana y sticky se
+  pega durante el scroll. z-index decide que elemento queda por encima.
+
+  Efectos: transform: rotate() gira, scale() aumenta y translate() mueve.
+  filter: invert() invierte colores, saturate() intensifica tonos y hue-rotate()
+  cambia los colores. transition controla la velocidad del cambio.
+
+  Responsive: la regla @media (max-width: 700px) contiene los cambios para
+  celular. La regla @media (max-width: 370px) ajusta telefonos muy estrechos.
+  Modifica esos numeros si quieres que el cambio ocurra en otro ancho.
+*/
+
 /* ===== Lienzo general ===== */
 main {
+  /* Colores principales: cambia estos valores para modificar toda la identidad visual. */
   --ink: #21192a;
   --paper: #f8ecfa;
   --acid: #e8ff78;
   --pink: #e8a5f0;
+  /* 100svh tiene en cuenta la altura real disponible en navegadores móviles. */
   min-height: 100svh;
+  /* Evita que sombras, fondos o elementos decorativos creen scroll horizontal. */
   overflow: hidden;
+  /* Color de texto heredado por los elementos internos. */
   color: var(--ink);
+  /* Color que se ve si la imagen aún no ha cargado o no cubre una zona. */
   background-color: var(--paper);
+  /* Capa de color semitransparente sobre el wallpaper para mejorar la lectura. */
   background-image: linear-gradient(rgba(248, 236, 250, 0.68), rgba(248, 236, 250, 0.68)), var(--wallpaper);
+  /* cover llena toda la pantalla; puede recortar un poco la imagen. */
   background-size: cover;
+  /* Mantiene el fondo quieto mientras se desplaza la página en escritorio. */
   background-attachment: fixed;
+  /* Centra la parte visible del wallpaper. */
   background-position: center;
 }
 
 /* ===== Navegación superior ===== */
 .site-header {
+  /* Tres zonas: contenido a la izquierda, logotipo al centro y menú a la derecha. */
   align-items: center;
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  /* Se coloca sobre el contenido y ocupa todo el ancho. */
   left: 0;
+  /* El primer valor es vertical; el segundo controla los márgenes laterales. */
   padding: 22px clamp(20px, 5vw, 72px);
   position: absolute;
   right: 0;
   top: 0;
+  /* Deja la navegación por encima de las imágenes. */
   z-index: 2;
 }
-
+/* Agrupa el nombre del estudio y los enlaces del lado izquierdo. */
+.header-left { align-items: center; display: flex; gap: clamp(24px, 4vw, 58px); min-width: 0; }
+/* La marca y los enlaces usan el color oscuro del tema claro. */
 .brand, .site-header a { color: var(--ink); }
+/* Identidad del artista: mayúsculas, peso fuerte y separación entre letras. */
 .brand { font-size: 0.83rem; font-weight: 800; letter-spacing: 0.18em; text-decoration: none; }
-.brand span { color: #ed5b4d; }
+/* El punto de la marca funciona como acento de color. */
+.brand span { color: #fe1500; }
+/* Espaciado flexible entre los enlaces del menú. */
 .site-header nav { display: flex; gap: clamp(18px, 3vw, 42px); }
 .site-header nav a { font-size: 0.63rem; letter-spacing: 0.13em; text-decoration: none; text-transform: uppercase; }
 .site-header nav a:hover { text-decoration: line-through; text-decoration-thickness: 2px; }
-.menu-link { display: grid; gap: 4px; width: 20px; }
+/* Logotipo central: object-fit evita que la imagen se deforme. */
+.header-logo {
+  display: block;
+  justify-self: center;
+  line-height: 0;
+  /* Cambia estos tres valores para controlar el logo en PC:
+     minimo, tamano ideal y maximo. */
+  width: clamp(170px, 18vw, 300px);
+}
+.header-logo img {
+  display: block;
+  height: auto;
+  max-width: 100%;
+  transition: filter 280ms ease, transform 280ms ease;
+}
+/* Al pasar el ratón se invierten y desplazan los tonos para crear el efecto psicodélico. */
+.header-logo:hover img,
+.header-logo:focus-visible img {
+  filter: invert(1) saturate(3.2) hue-rotate(145deg) contrast(1.25);
+  transform: scale(1.08) rotate(-2deg);
+}
+/* El menú se representa con tres líneas, sin depender de una imagen. */
+.menu-link { display: grid; gap: 4px; justify-self: end; width: 20px; }
 .menu-link span { background: currentColor; display: block; height: 1px; width: 100%; }
 
 /* ===== Estructura común de cada uno de los 3 bloques ===== */
 .artist-block {
   align-items: center;
   display: grid;
+  /* Separa las dos columnas sin usar márgenes manuales. */
   gap: clamp(30px, 7vw, 110px);
+  /* Primera columna para texto, segunda para la ventana visual. */
   grid-template-columns: minmax(0, 0.92fr) minmax(260px, 1.08fr);
+  /* Cada bloque ocupa como mínimo una pantalla en escritorio. */
   min-height: min(760px, 100svh);
+  /* Reserva espacio para la cabecera y para la nota inferior. */
   padding: 110px clamp(20px, 10vw, 150px) 76px;
   position: relative;
+  /* Evita que un salto desde la navegación quede oculto bajo la cabecera. */
   scroll-margin-top: 20px;
 }
+/* Limita la longitud del texto para que sea cómodo de leer. */
 .block-copy { max-width: 450px; position: relative; z-index: 1; }
+/* Texto pequeño que identifica cada sección. */
 .eyebrow { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.13em; margin: 0 0 28px; text-transform: uppercase; }
+/* clamp reduce o aumenta el título según el ancho, sin saltos bruscos. */
 h1, h2 { font-size: clamp(3.2rem, 7vw, 7.5rem); font-weight: 800; letter-spacing: -0.075em; line-height: 0.86; margin: 0; }
+/* Resalta una palabra del titular. */
 h1 em, h2 em { color: #ad59bc; font-style: normal; }
+/* Texto descriptivo con ancho limitado y una separación clara. */
 .intro { font-size: 0.9rem; line-height: 1.6; margin: 30px 0; max-width: 285px; }
+/* Botón de borde: hereda el color del bloque claro u oscuro. */
 .outline-button { align-items: center; border: 1px solid currentColor; color: inherit; display: inline-flex; font-family: 'DM Mono', monospace; font-size: 0.64rem; gap: 24px; letter-spacing: 0.08em; padding: 14px 17px; text-decoration: none; text-transform: uppercase; transition: background-color 180ms ease, color 180ms ease; }
+/* Invierte los colores del botón al interactuar con él. */
 .outline-button:hover { background: var(--ink); color: var(--paper); }
 .outline-button span { font-size: 1rem; }
+/* Pequeña etiqueta de numeración colocada al borde inferior. */
 .side-note { bottom: 34px; font-family: 'DM Mono', monospace; font-size: 0.57rem; letter-spacing: 0.1em; position: absolute; right: clamp(20px, 5vw, 72px); text-transform: uppercase; }
 
 /* Las ventanas reutilizan el wallpaper, pero cada bloque muestra otra zona. */
 .image-window { background-image: linear-gradient(115deg, rgba(33, 25, 42, 0.03), rgba(33, 25, 42, 0.22)), var(--wallpaper); background-size: 160% auto; box-shadow: 14px 16px 0 rgba(33, 25, 42, 0.86); min-height: 480px; position: relative; }
+/* Recorte alto: cambia background-position para mostrar otra zona de la imagen. */
 .window-tall { background-position: 72% 12%; transform: rotate(2deg); }
+/* Recorte ancho con sombra amarilla y una ligera inclinación opuesta. */
 .window-wide { background-position: 30% 72%; box-shadow: -14px 16px 0 var(--acid); min-height: 390px; transform: rotate(-2deg); }
 
 /* ===== Bloque 2: invierte el orden y crea el contraste oscuro ===== */
+/* Fondo oscuro para alternar el ritmo visual de la página. */
 .block-dark { background: var(--ink); color: var(--paper); grid-template-columns: minmax(260px, 1.1fr) minmax(0, 0.9fr); }
+/* En escritorio el texto pasa a la derecha y la imagen queda a la izquierda. */
 .block-dark .block-copy { order: 2; }
 .block-dark .image-window { order: 1; }
+/* El acento del título cambia a amarillo sobre fondo oscuro. */
 .block-dark h2 em { color: var(--acid); }
 .block-dark .outline-button:hover { background: var(--acid); color: var(--ink); }
 .block-dark .side-note { color: var(--acid); }
 
 /* ===== Bloque 3: cierre y llamada a la acción ===== */
+/* Da al cierre una altura menor que los bloques principales. */
 .block-contact { min-height: 560px; }
+/* Sello tipográfico decorativo para equilibrar la composición final. */
 .contact-stamp { align-items: center; border: 1px solid var(--ink); color: #ed5b4d; display: flex; font-size: clamp(3rem, 8vw, 7rem); font-weight: 800; justify-content: center; line-height: 0.68; min-height: 390px; transform: rotate(6deg); width: min(100%, 360px); }
 .dark-button:hover { background: #ed5b4d; color: var(--paper); }
+/* El pie separa los datos de estudio y redes con una línea superior. */
 footer { border-top: 1px solid rgba(33, 25, 42, 0.35); display: flex; font-family: 'DM Mono', monospace; font-size: 0.6rem; justify-content: space-between; letter-spacing: 0.08em; padding: 22px clamp(20px, 5vw, 72px); text-transform: uppercase; }
 
 /* ===== Ajuste responsive: una columna cómoda para móvil =====
    En móvil cada bloque se apila. Las ventanas usan aspect-ratio para que
    mantengan una altura predecible y nunca empujen el contenido fuera de la pantalla. */
 @media (max-width: 700px) {
+  /* En móvil el fondo fijo puede producir saltos al aparecer la barra del navegador. */
   main {
     background-attachment: scroll;
   }
@@ -88,10 +187,21 @@ footer { border-top: 1px solid rgba(33, 25, 42, 0.35); display: flex; font-famil
     padding: 18px 20px;
   }
 
-  .brand {
-    font-size: 0.75rem;
+  /* En pantallas pequeñas el logotipo sigue centrado y deja aire a los lados. */
+  .site-header {
+    grid-template-columns: 1fr auto 1fr;
   }
 
+  /* En movil el logo crece, pero conserva espacio para el menu lateral. */
+  .header-logo {
+    width: clamp(180px, 58vw, 270px);
+  }
+
+  .brand {
+    display: none;
+  }
+
+  /* Se ocultan los enlaces pequeños y se conserva el botón de menú. */
   .site-header nav { display: none; }
 
   /* Reducimos el espacio lateral para que el texto tenga aire sin
@@ -110,6 +220,7 @@ footer { border-top: 1px solid rgba(33, 25, 42, 0.35); display: flex; font-famil
   .block-copy,
   .block-dark .block-copy {
     max-width: 100%;
+    /* Restablece el orden natural después de la inversión de escritorio. */
     order: 0;
   }
 
@@ -152,6 +263,7 @@ footer { border-top: 1px solid rgba(33, 25, 42, 0.35); display: flex; font-famil
   }
 
   .outline-button {
+    /* Tamaño mínimo recomendado para poder pulsarlo cómodamente. */
     min-height: 46px;
     padding: 12px 15px;
   }
@@ -178,6 +290,7 @@ footer { border-top: 1px solid rgba(33, 25, 42, 0.35); display: flex; font-famil
 /* En teléfonos muy estrechos se reduce solo el título para que sus palabras
    sigan cabiendo completas; el resto de la escala permanece igual. */
 @media (max-width: 370px) {
+  /* Ajustes para teléfonos estrechos, como algunos modelos compactos. */
   h1,
   h2 {
     font-size: 2.85rem;
