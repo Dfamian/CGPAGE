@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Capa_2" data-name="Capa 2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 28.47 23.69">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: url(#radial-gradient);
+      }
+
+      .cls-2 {
+        fill: url(#radial-gradient-3);
+      }
+
+      .cls-3 {
+        fill: url(#radial-gradient-2);
+      }
+    </style>
+    <radialGradient id="radial-gradient" cx="20.37" cy="18.89" fx="20.37" fy="18.89" r="6.41" gradientUnits="userSpaceOnUse">
+      <stop offset=".04" stop-color="#fec00f"/>
+      <stop offset="1" stop-color="#d61b22"/>
+    </radialGradient>
+    <radialGradient id="radial-gradient-2" cx="18.33" cy="9.35" fx="18.33" fy="9.35" r="8.6" xlink:href="#radial-gradient"/>
+    <radialGradient id="radial-gradient-3" cx="5.25" cy="8.44" fx="5.25" fy="8.44" r="6.78" xlink:href="#radial-gradient"/>
+  </defs>
+  <g id="Layer_1" data-name="Layer 1">
+    <g>
+      <polygon class="cls-1" points="26.4 14.34 28.22 23.44 12.53 22.3 26.4 14.34"/>
+      <polygon class="cls-3" points="26.4 7.07 10.26 18.44 19.35 .25 26.4 7.07"/>
+      <polygon class="cls-2" points="10.26 2.97 7.07 16.62 .25 .25 10.26 2.97"/>
+    </g>
+  </g>
+</svg>

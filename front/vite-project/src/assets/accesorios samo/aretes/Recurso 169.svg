@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Capa_2" data-name="Capa 2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 148.34 24.14">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: url(#radial-gradient);
+      }
+
+      .cls-2 {
+        fill: url(#radial-gradient-2);
+      }
+    </style>
+    <radialGradient id="radial-gradient" cx="12.78" cy="12.07" fx="12.78" fy="12.07" r="12.43" gradientUnits="userSpaceOnUse">
+      <stop offset=".3" stop-color="#7e8083"/>
+      <stop offset="1" stop-color="#000"/>
+    </radialGradient>
+    <radialGradient id="radial-gradient-2" cx="135.56" fx="135.56" r="12.43" xlink:href="#radial-gradient"/>
+  </defs>
+  <g id="Layer_1" data-name="Layer 1">
+    <g>
+      <path class="cls-1" d="M9.26,4.95c-2.33,1.28-3.78,3.74-3.78,6.4,0,4.01,3.3,7.3,7.3,7.3s7.13-3.11,7.3-6.99l5.48-.04c-.15,6.91-5.87,12.51-12.78,12.51S0,18.37,0,11.35C0,6.82,3.84,0,7.81,0"/>
+      <path class="cls-2" d="M139.08,4.95c2.33,1.28,3.78,3.74,3.78,6.4,0,4.01-3.3,7.3-7.3,7.3s-7.13-3.11-7.3-6.99l-5.48-.04c.15,6.91,5.87,12.51,12.78,12.51,7.01,0,12.78-5.77,12.78-12.78C148.34,6.82,144.5,0,140.53,0"/>
+    </g>
+  </g>
+</svg>

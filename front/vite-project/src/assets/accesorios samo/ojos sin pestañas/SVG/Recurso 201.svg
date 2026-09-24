@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Capa_2" data-name="Capa 2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 69 26.44">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+        stroke: #000;
+        stroke-miterlimit: 10;
+      }
+
+      .cls-2 {
+        fill: url(#radial-gradient);
+      }
+
+      .cls-3 {
+        fill: url(#radial-gradient-3);
+      }
+
+      .cls-4 {
+        fill: url(#radial-gradient-2);
+      }
+
+      .cls-5 {
+        fill: url(#radial-gradient-4);
+      }
+    </style>
+    <radialGradient id="radial-gradient" cx="55.78" cy="13.22" fx="55.78" fy="13.22" r="12.72" gradientUnits="userSpaceOnUse">
+      <stop offset=".04" stop-color="#fff"/>
+      <stop offset="1" stop-color="#abadb0"/>
+    </radialGradient>
+    <radialGradient id="radial-gradient-2" cx="54.28" cy="14.07" fx="54.28" fy="14.07" r="4.55" gradientUnits="userSpaceOnUse">
+      <stop offset=".3" stop-color="#7e8083"/>
+      <stop offset="1" stop-color="#000"/>
+    </radialGradient>
+    <radialGradient id="radial-gradient-3" cx="13.22" fx="13.22" r="12.72" xlink:href="#radial-gradient"/>
+    <radialGradient id="radial-gradient-4" cx="14.72" fx="14.72" r="4.55" xlink:href="#radial-gradient-2"/>
+  </defs>
+  <g id="Layer_1" data-name="Layer 1">
+    <g>
+      <path class="cls-2" d="M55.78.5c7.02,0,12.72,5.69,12.72,12.72s-5.7,12.72-12.72,12.72-12.72-5.7-12.72-12.72S48.75.5,55.78.5ZM58.83,14.08c0-2.51-2.04-4.55-4.55-4.55s-4.55,2.04-4.55,4.55,2.04,4.54,4.55,4.54,4.55-2.03,4.55-4.54Z"/>
+      <path class="cls-4" d="M54.28,9.53c2.51,0,4.55,2.04,4.55,4.55s-2.04,4.54-4.55,4.54-4.55-2.03-4.55-4.54,2.04-4.55,4.55-4.55Z"/>
+      <path class="cls-3" d="M13.22.5c7.02,0,12.72,5.69,12.72,12.72s-5.7,12.72-12.72,12.72S.5,20.24.5,13.22,6.2.5,13.22.5ZM19.27,14.08c0-2.51-2.04-4.55-4.55-4.55s-4.55,2.04-4.55,4.55,2.04,4.54,4.55,4.54,4.55-2.03,4.55-4.54Z"/>
+      <path class="cls-5" d="M14.72,9.53c2.51,0,4.55,2.04,4.55,4.55s-2.04,4.54-4.55,4.54-4.55-2.03-4.55-4.54,2.04-4.55,4.55-4.55Z"/>
+      <circle class="cls-1" cx="13.22" cy="13.22" r="12.72"/>
+      <path class="cls-1" d="M19.27,14.08c0,2.51-2.04,4.54-4.55,4.54s-4.55-2.03-4.55-4.54,2.04-4.55,4.55-4.55,4.55,2.04,4.55,4.55Z"/>
+      <circle class="cls-1" cx="55.78" cy="13.22" r="12.72"/>
+      <path class="cls-1" d="M49.73,14.08c0,2.51,2.04,4.54,4.55,4.54s4.55-2.03,4.55-4.54-2.04-4.55-4.55-4.55-4.55,2.04-4.55,4.55Z"/>
+    </g>
+  </g>
+</svg>

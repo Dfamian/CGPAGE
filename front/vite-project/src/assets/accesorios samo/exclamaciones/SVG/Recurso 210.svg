@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Capa_2" data-name="Capa 2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 19.45 20.18">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: url(#radial-gradient);
+      }
+
+      .cls-2 {
+        fill: url(#radial-gradient-3);
+      }
+
+      .cls-3 {
+        fill: url(#radial-gradient-2);
+      }
+    </style>
+    <radialGradient id="radial-gradient" cx="9.73" cy="9.43" fx="9.73" fy="9.43" r="7.93" gradientUnits="userSpaceOnUse">
+      <stop offset=".07" stop-color="#e582b5"/>
+      <stop offset="1" stop-color="#463896"/>
+    </radialGradient>
+    <radialGradient id="radial-gradient-2" cx="8.47" cy="15.84" fx="8.47" fy="15.84" r="3.41" xlink:href="#radial-gradient"/>
+    <radialGradient id="radial-gradient-3" cx="9.65" cy="3.8" fx="9.65" fy="3.8" r="3.11" xlink:href="#radial-gradient"/>
+  </defs>
+  <g id="Layer_1" data-name="Layer 1">
+    <g>
+      <path class="cls-1" d="M19.45,14.09c.06.6-.52,1.06-1.09.87-2.59-.8-5.18-1.6-7.77-2.39-1.18-.36-2.37-.72-3.55-1.08-2.03-.62-4.05-1.24-6.08-1.85-.64-.19-1.04-.83-.93-1.49.23-1.35.6-2.97,1.01-4.11.07-.19.29-.25.45-.13,1.78,1.36,3.81,2.29,5.97,2.92,1.15.34,2.34.58,3.55.77,2.17.34,4.39.45,6.57.49.32,0,.67.01.92.23.25.21.33.57.38.9.25,1.62.45,3.24.59,4.87Z"/>
+      <path class="cls-3" d="M7.03,11.5c1.18.36,2.37.71,3.55,1.08-.13,2.22-.2,4.44-.22,6.67,0,.18,0,.37-.13.5-.11.11-.28.13-.42.15l-2.27.27c-.67.08-1.24-.47-1.18-1.15.23-2.51.46-5.01.68-7.52Z"/>
+      <path class="cls-2" d="M11.85.91c-.35,2.23-.63,4.47-.86,6.7-1.21-.19-2.4-.44-3.55-.77.17-1.97.34-3.95.5-5.92.04-.42.39-.74.82-.72.78.02,1.45-.07,2.2-.18.52-.08.98.37.9.9Z"/>
+    </g>
+  </g>
+</svg>
