@@ -81,12 +81,12 @@ main {
 /* La marca y los enlaces usan el color oscuro del tema claro. */
 .brand, .site-header a { color: var(--ink); }
 /* Identidad del artista: mayúsculas, peso fuerte y separación entre letras. */
-.brand { font-size: 0.83rem; font-weight: 800; letter-spacing: 0.18em; text-decoration: none; }
+.brand { font-size: 1.73rem; font-weight: 800; letter-spacing: 0.18em; text-decoration: none; }
 /* El punto de la marca funciona como acento de color. */
 .brand span { color: #fe1500; }
 /* Espaciado flexible entre los enlaces del menú. */
 .site-header nav { display: flex; gap: clamp(18px, 3vw, 42px); }
-.site-header nav a { font-size: 0.63rem; letter-spacing: 0.13em; text-decoration: none; text-transform: uppercase;  }
+.site-header nav a { font-size: 0.93rem; letter-spacing: 0.13em; text-decoration: none; text-transform: uppercase; font-weight: 700; transition: color 180ms ease; }
 .site-header nav a:hover { text-decoration: line-through; text-decoration-thickness: 2px; text-decoration-style: double; text-decoration-color: rgba(10, 10, 10, 0.232); }
 /* Logotipo central: object-fit evita que la imagen se deforme. */
 .header-logo {
@@ -115,6 +115,7 @@ main {
 
 /* ===== Estructura común de cada uno de los 3 bloques ===== */
 .artist-block {
+  
   align-items: center;
   display: grid;
   /* Separa las dos columnas sin usar márgenes manuales. */
@@ -148,11 +149,15 @@ h1 em, h2 em { color: #ad59bc; font-style: normal; }
 .side-note { bottom: 34px; font-family: 'DM Mono', monospace; font-size: 0.57rem; letter-spacing: 0.1em; position: absolute; right: clamp(20px, 5vw, 72px); text-transform: uppercase; }
 
 /* Las ventanas reutilizan el wallpaper, pero cada bloque muestra otra zona. */
-.image-window { background-image: linear-gradient(115deg, rgba(33, 25, 42, 0.03), rgba(33, 25, 42, 0.22)), var(--wallpaper); background-size: 160% auto; box-shadow: 14px 16px 0 rgba(33, 25, 42, 0.86); min-height: 480px; position: relative; }
+.image-window { background-image: linear-gradient(115deg, rgba(29, 22, 36, 0.03), rgba(33, 25, 42, 0.22)), var(--wallpaper); background-size: 160% auto; box-shadow: 14px 16px 0 rgba(33, 25, 42, 0.86); min-height: 480px; position: relative; }
 /* Recorte alto: cambia background-position para mostrar otra zona de la imagen. */
 .window-tall { background-position: 72% 12%; transform: rotate(2deg); }
 /* Recorte ancho con sombra amarilla y una ligera inclinación opuesta. */
 .window-wide { background-position: 30% 72%; box-shadow: -14px 16px 0 var(--acid); min-height: 390px; transform: rotate(-2deg); }
+
+
+
+
 
 /* ===== Bloque 2: invierte el orden y crea el contraste oscuro ===== */
 /* Fondo oscuro para alternar el ritmo visual de la página. */
@@ -165,6 +170,79 @@ h1 em, h2 em { color: #ad59bc; font-style: normal; }
 .block-dark .outline-button:hover { background: var(--acid); color: var(--ink); }
 .block-dark .side-note { color: var(--acid); }
 
+/* ===== Editor interactivo del bloque 2 ===== */
+.builder-block { align-items: start; display: grid; gap: clamp(28px, 4vw, 58px); grid-template-columns: minmax(180px, 0.26fr) minmax(0, 1.74fr); min-height: auto; padding-bottom: 62px; padding-top: 94px; padding-left: 30px; padding-right: 30px; }
+.builder-intro { align-self: stretch; display: flex; flex-direction: column; height: 100%; max-width: 300px; padding-top: 8px; }
+.builder-intro h2 { font-size: clamp(3.4rem, 6vw, 6.7rem); }
+.builder-intro .intro { color: rgba(248, 236, 250, 0.76); }
+.name-control { color: rgba(248, 236, 250, 0.72); display: flex; flex-direction: column; font-family: 'DM Mono', monospace; font-size: 0.68rem; gap: 10px; letter-spacing: 0.06em; margin-top: 12px; text-transform: uppercase; }
+.name-control input { background: rgba(248, 236, 250, 0.08); border: 1px solid rgba(232, 255, 120, 0.58); color: var(--paper); font: inherit; letter-spacing: 0.03em; min-height: 48px; padding: 11px 12px; text-transform: none; width: 100%; }
+.name-control input:focus { border-color: var(--acid); outline: 2px solid rgba(232, 255, 120, 0.22); outline-offset: 2px; }
+.builder-action-panel { display: flex; flex-direction: column; gap: 14px; margin-top: auto; width: 100%; }
+.name-toggle { align-items: center; color: rgba(248, 236, 250, 0.72); display: flex; font-family: 'DM Mono', monospace; font-size: 0.62rem; gap: 9px; margin-top: 12px; text-transform: uppercase; }
+.name-toggle input { accent-color: var(--acid); height: 16px; width: 16px; }
+.builder-actions { align-items: stretch; display: flex; flex-direction: column; gap: 12px; margin-top: 0; }
+.builder-actions .builder-action,
+.builder-actions .text-action { justify-content: space-between; min-height: 48px; width: 100%; }
+.builder-action { color: var(--ink); cursor: pointer; }
+.builder-action:hover { background: var(--acid); color: var(--ink); }
+.text-action { background: transparent; border: 1px solid rgba(232, 255, 120, 0.58); color: var(--acid); cursor: pointer; font-family: 'DM Mono', monospace; font-size: 0.67rem; letter-spacing: 0.06em; padding: 11px 13px; text-align: left; text-transform: uppercase; transition: background-color 160ms ease, color 160ms ease, transform 160ms ease; }
+.text-action:hover, .text-action:focus-visible { background: var(--acid); color: var(--ink); outline: none; transform: translateY(-2px); }
+.text-action span { font-size: 1.1rem; margin-left: 8px; }
+.builder-count { color: rgba(248, 236, 250, 0.52); font-family: 'DM Mono', monospace; font-size: 0.59rem; letter-spacing: 0.08em; margin-top: 14px; text-transform: uppercase; }
+.builder-workspace { align-items: start; display: grid; gap: clamp(20px, 3vw, 36px); grid-template-columns: minmax(270px, 400px) minmax(320px, 1fr); min-width: 0; }
+.builder-stage { align-self: start; aspect-ratio: 1 / 1.08; background: #ffffff; border: 1px solid rgba(248, 236, 250, 0.25); box-shadow: 10px 10px 0 rgba(248, 236, 250, 0.13); min-height: 0; overflow: hidden; position: relative; touch-action: none; width: min(100%, 400px); border-radius: 30px; }
+.builder-stage::before { display: none; }
+.builder-frame { height: 100%; inset: 0; object-fit: contain; pointer-events: none; position: absolute; width: 100%; z-index: 0; }
+.builder-face { background: #f2b48a; border: 3px solid var(--ink); border-radius: 48% 48% 44% 44%; height: 70%; left: 50%; position: absolute; top: 52%; transform: translate(-50%, -50%); width: 65%; z-index: 1; }
+.builder-face::before { background: var(--acid); border: 3px solid var(--ink); border-bottom: 0; border-radius: 50% 50% 0 0; content: ''; height: 25%; left: -3%; position: absolute; top: -7%; transform: rotate(-4deg); width: 106%; }
+.builder-face-eye { background: var(--ink); border-radius: 50%; height: 16px; position: absolute; top: 42%; width: 16px; }
+.builder-face-eye-left { left: 29%; }
+.builder-face-eye-right { right: 29%; }
+.builder-face-mouth { border-bottom: 3px solid var(--ink); border-radius: 0 0 50% 50%; bottom: 24%; height: 28px; left: 35%; position: absolute; width: 30%; }
+.builder-silhouette { height: auto; left: 50%; max-height: 86%; max-width: 90%; position: absolute; top: 50%; transform: translate(-50%, -50%); width: 82%; z-index: 1; }
+.builder-silhouette-gradient { background-repeat: no-repeat; background-size: 100% 100%; height: 82%; mask-position: center; mask-repeat: no-repeat; mask-size: contain; pointer-events: auto; }
+.builder-layer { cursor: grab; height: auto; max-width: none; pointer-events: auto; position: absolute; user-select: none; }
+.builder-layer.is-dragging { cursor: grabbing; filter: drop-shadow(3px 4px 0 rgba(33, 25, 42, 0.28)); }
+.stage-label { bottom: 13px; color: rgba(33, 25, 42, 0.55); font-family: 'DM Mono', monospace; font-size: 0.55rem; left: 15px; letter-spacing: 0.08em; position: absolute; text-transform: uppercase; z-index: 10; }
+.builder-controls { min-width: 0; }
+.control-section { border-top: 1px solid rgba(248, 236, 250, 0.27); padding: 15px 0 22px; }
+.control-heading { align-items: center; display: flex; gap: 13px; margin-bottom: 15px; }
+.control-heading span { color: var(--acid); font-family: 'DM Mono', monospace; font-size: 0.58rem; }
+.control-heading strong { font-size: 0.72rem; letter-spacing: 0.07em; text-transform: uppercase; }
+.scale-control { align-items: center; color: rgba(248, 236, 250, 0.72); display: flex; font-family: 'DM Mono', monospace; font-size: 0.62rem; gap: 14px; text-transform: uppercase; }
+.scale-control span { color: var(--acid); min-width: 68px; }
+.scale-control input { accent-color: var(--acid); cursor: pointer; flex: 1; min-width: 0; }
+.scale-control input:disabled { cursor: not-allowed; opacity: 0.35; }
+.color-pickers { display: flex; flex-wrap: wrap; gap: 12px; }
+.color-pickers label { align-items: center; color: rgba(248, 236, 250, 0.72); display: flex; font-family: 'DM Mono', monospace; font-size: 0.62rem; gap: 8px; text-transform: uppercase; }
+.color-pickers input { background: transparent; border: 1px solid rgba(248, 236, 250, 0.3); cursor: pointer; height: 30px; padding: 2px; width: 54px; }
+.builder-controls > .color-controls:nth-last-child(2) { display: none; }
+.remove-action { background: transparent; border: 1px solid rgba(248, 236, 250, 0.35); color: var(--paper); cursor: pointer; font-family: 'DM Mono', monospace; font-size: 0.54rem; letter-spacing: 0.05em; margin-left: auto; padding: 6px 8px; text-transform: uppercase; }
+.remove-action:hover:not(:disabled), .remove-action:focus-visible:not(:disabled) { background: #ed5b4d; border-color: #ed5b4d; color: var(--paper); outline: none; }
+.remove-action:disabled { cursor: not-allowed; opacity: 0.35; }
+.remove-action span { font-size: 0.95rem; margin-left: 4px; }
+.asset-strip { display: flex; gap: 8px; overflow-x: auto; padding: 4px 2px 12px; scrollbar-color: var(--acid) rgba(248, 236, 250, 0.14); scrollbar-width: thin; }
+.asset-choice { align-items: center; background: rgba(248, 236, 250, 0.08); border: 1px solid transparent; cursor: pointer; display: flex; flex: 0 0 58px; height: 58px; justify-content: center; padding: 7px; transition: background-color 160ms ease, border-color 160ms ease, transform 160ms ease; }
+.asset-choice:hover { background: rgba(232, 255, 120, 0.22); border-color: var(--acid); transform: translateY(-3px); }
+.asset-choice.is-selected { background: var(--acid); border-color: var(--acid); box-shadow: 3px 3px 0 rgba(248, 236, 250, 0.44); }
+.asset-choice img { display: block; height: auto; max-height: 100%; max-width: 100%; object-fit: contain; width: auto; }
+.silhouette-carousel { align-items: center; display: grid; gap: 12px; grid-template-columns: 42px minmax(0, 1fr) 42px; }
+.carousel-arrow { align-items: center; background: transparent; border: 1px solid rgba(248, 236, 250, 0.38); color: var(--paper); cursor: pointer; display: flex; font-size: 1.35rem; height: 42px; justify-content: center; transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease; width: 42px; }
+.carousel-arrow:hover, .carousel-arrow:focus-visible { background: var(--acid); border-color: var(--acid); color: var(--ink); outline: none; }
+.silhouette-preview { align-items: center; background: rgba(248, 236, 250, 0.92); display: flex; height: 112px; justify-content: center; position: relative; }
+.silhouette-preview img { height: 94px; max-width: 85%; object-fit: contain; width: auto; }
+.silhouette-preview span { bottom: 7px; color: rgba(33, 25, 42, 0.55); font-family: 'DM Mono', monospace; font-size: 0.54rem; letter-spacing: 0.08em; position: absolute; right: 9px; }
+.category-tabs { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 13px; }
+.category-tabs button { background: transparent; border: 1px solid rgba(248, 236, 250, 0.28); color: var(--paper); cursor: pointer; font-family: 'DM Mono', monospace; font-size: 0.55rem; letter-spacing: 0.04em; padding: 8px 9px; text-transform: uppercase; }
+.category-tabs button:hover, .category-tabs button.is-active { background: var(--acid); border-color: var(--acid); color: var(--ink); }
+.accessory-choice { height: 66px; }
+
+
+
+
+
+
 /* ===== Bloque 3: cierre y llamada a la acción ===== */
 /* Da al cierre una altura menor que los bloques principales. */
 .block-contact { min-height: 560px; }
@@ -173,6 +251,18 @@ h1 em, h2 em { color: #ad59bc; font-style: normal; }
 .dark-button:hover { background: #ed5b4d; color: var(--paper); }
 /* El pie separa los datos de estudio y redes con una línea superior. */
 footer { border-top: 1px solid rgba(33, 25, 42, 0.35); display: flex; font-family: 'DM Mono', monospace; font-size: 0.6rem; justify-content: space-between; letter-spacing: 0.08em; padding: 22px clamp(20px, 5vw, 72px); text-transform: uppercase; }
+
+
+
+
+
+/* En anchos intermedios el texto ocupa su propia fila para que el escenario
+   y los controles conserven espacio suficiente y no se superpongan. */
+@media (max-width: 1100px) and (min-width: 701px) {
+  .builder-block { display: flex; flex-direction: column; gap: 34px; }
+  .builder-intro { max-width: 360px; }
+  .builder-workspace { grid-template-columns: minmax(280px, 400px) minmax(0, 1fr); width: 100%; }
+}
 
 /* ===== Ajuste responsive: una columna cómoda para móvil =====
    En móvil cada bloque se apila. Las ventanas usan aspect-ratio para que
@@ -285,11 +375,137 @@ footer { border-top: 1px solid rgba(33, 25, 42, 0.35); display: flex; font-famil
     gap: 10px;
     line-height: 1.5;
   }
+  /*
+    ===== Editor interactivo de Cabezamos =====
+    Este bloque contiene todos los estilos del segundo bloque de la pagina.
+    La estructura visual tiene tres partes principales:
+    1. .builder-intro: titulo, instrucciones y acciones.
+    2. .builder-stage: escenario donde se compone el cabezamo.
+    3. .builder-controls: selector de siluetas y accesorios.
+
+    Los porcentajes de posicion de cada accesorio viven en App.jsx, dentro
+    de layerDefaults. Aqui solo se controla como se muestra la composicion.
+  */
+  .builder-block {
+    /* Organiza el texto y el editor en dos columnas en pantallas grandes. */
+    align-items: stretch;
+    display: grid;
+    gap: clamp(30px, 5vw, 80px);
+    grid-template-columns: minmax(180px, 0.33fr) minmax(0, 1.67fr);
+    min-height: min(900px, 100svh);
+    padding-bottom: 76px;
+    padding-top: 130px;
+  }
+  /* Columna izquierda: titulo y acciones del editor. */
+  .builder-intro { display: flex; flex-direction: column; max-width: 300px; }
+  /* Escala del titulo propio del editor. */
+  .builder-intro h2 { font-size: clamp(3.4rem, 6vw, 6.7rem); }
+  /* Texto secundario sobre el fondo oscuro. */
+  .builder-intro .intro { color: rgba(248, 236, 250, 0.76); }
+  /* Agrupa Mezcla libre y Limpiar composicion en vertical. */
+  .builder-actions { align-items: flex-start; display: flex; flex-direction: column; gap: 18px; margin-top: 10px; }
+  .builder-actions .text-action { border: 1px solid rgba(232, 255, 120, 0.58); min-height: 48px; padding: 11px 13px; width: 100%; }
+  /* Boton que genera una combinacion aleatoria de accesorios. */
+  .builder-action { color: var(--paper); cursor: pointer; }
+  .builder-action:hover { background: var(--acid); color: var(--ink); }
+  /* Boton para eliminar todos los accesorios activos. */
+  .text-action { background: none; border: 0; color: var(--acid); cursor: pointer; font-family: 'DM Mono', monospace; font-size: 0.61rem; letter-spacing: 0.06em; padding: 0; text-align: left; text-transform: uppercase; }
+  .text-action span { font-size: 1rem; margin-left: 8px; }
+  /* Contador de accesorios activos, actualizado desde React. */
+  .builder-count { color: rgba(248, 236, 250, 0.52); font-family: 'DM Mono', monospace; font-size: 0.59rem; letter-spacing: 0.08em; margin-top: auto; text-transform: uppercase; }
+  /* Divide el escenario y los controles del editor. */
+  .builder-workspace { display: grid; gap: 28px; grid-template-columns: minmax(280px, 0.9fr) minmax(340px, 1.1fr); min-width: 0; }
+  /* Lienzo de composicion: todo accesorio se posiciona respecto a este elemento. */
+  .builder-stage { align-self: start; aspect-ratio: 1 / 1.08; background: #ffffff; border: 1px solid rgba(248, 236, 250, 0.25); box-shadow: 13px 13px 0 rgba(248, 236, 250, 0.13); min-height: 360px; overflow: hidden; position: relative; touch-action: none; }
+  /* Rejilla decorativa del lienzo. No recibe eventos para no bloquear el arrastre. */
+  .builder-stage::before { display: none; }
+  /* Silueta base: queda centrada y debajo de todos los accesorios. */
+  .builder-silhouette { height: auto; left: 50%; max-height: 78%; max-width: 80%; position: absolute; top: 50%; transform: translate(-50%, -50%); width: 68%; z-index: 1; }
+  /* Accesorios: React define left, top, width y z-index con estilos inline. */
+  .builder-layer { cursor: grab; height: auto; max-width: none; pointer-events: auto; position: absolute; user-select: none; }
+  /* Estado visual mientras el usuario arrastra una pieza. */
+  .builder-layer.is-dragging { cursor: grabbing; filter: drop-shadow(3px 4px 0 rgba(33, 25, 42, 0.28)); }
+  /* Texto de ayuda dentro del escenario. */
+  .stage-label { bottom: 13px; color: rgba(33, 25, 42, 0.55); font-family: 'DM Mono', monospace; font-size: 0.55rem; left: 15px; letter-spacing: 0.08em; position: absolute; text-transform: uppercase; z-index: 10; }
+  /* Columna que contiene los controles de seleccion. */
+  .builder-controls { min-width: 0; }
+  /* Separacion visual entre selector de silueta y selector de accesorios. */
+  .control-section { border-top: 1px solid rgba(248, 236, 250, 0.27); padding: 15px 0 22px; }
+  /* Numero y titulo de cada grupo de controles. */
+  .control-heading { align-items: center; display: flex; gap: 13px; margin-bottom: 15px; }
+  .control-heading span { color: var(--acid); font-family: 'DM Mono', monospace; font-size: 0.58rem; }
+  .control-heading strong { font-size: 0.72rem; letter-spacing: 0.07em; text-transform: uppercase; }
+  /* Fila horizontal reutilizable para miniaturas de assets. */
+  .asset-strip { display: flex; gap: 8px; overflow-x: auto; padding: 4px 2px 12px; scrollbar-color: var(--acid) rgba(248, 236, 250, 0.14); scrollbar-width: thin; }
+  /* Boton base de cada accesorio disponible. */
+  .asset-choice { align-items: center; background: rgba(248, 236, 250, 0.08); border: 1px solid transparent; cursor: pointer; display: flex; flex: 0 0 58px; height: 58px; justify-content: center; padding: 7px; transition: background-color 160ms ease, border-color 160ms ease, transform 160ms ease; }
+  /* Realce al pasar el cursor sobre un accesorio. */
+  .asset-choice:hover { background: rgba(232, 255, 120, 0.22); border-color: var(--acid); transform: translateY(-3px); }
+  /* Indica que el accesorio elegido es el que esta en el escenario. */
+  .asset-choice.is-selected { background: var(--acid); border-color: var(--acid); box-shadow: 3px 3px 0 rgba(248, 236, 250, 0.44); }
+  .asset-choice img { display: block; height: auto; max-height: 100%; max-width: 100%; object-fit: contain; width: auto; }
+  .silhouette-strip .asset-choice { background: rgba(248, 236, 250, 0.9); height: 76px; }
+  .silhouette-strip .asset-choice.is-selected { background: var(--acid); }
+  .silhouette-strip .asset-choice img { max-height: 64px; }
+  /* Carrusel: flecha anterior, silueta visible y flecha siguiente. */
+  .silhouette-carousel { align-items: center; display: grid; gap: 12px; grid-template-columns: 42px minmax(0, 1fr) 42px; }
+  /* Flechas que cambian silhouetteIndex en App.jsx. */
+  .carousel-arrow { align-items: center; background: transparent; border: 1px solid rgba(248, 236, 250, 0.38); color: var(--paper); cursor: pointer; display: flex; font-size: 1.35rem; height: 42px; justify-content: center; transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease; width: 42px; }
+  .carousel-arrow:hover, .carousel-arrow:focus-visible { background: var(--acid); border-color: var(--acid); color: var(--ink); outline: none; }
+  .silhouette-preview { align-items: center; background: rgba(248, 236, 250, 0.92); display: flex; height: 112px; justify-content: center; position: relative; }
+  .silhouette-preview img { height: 94px; max-width: 85%; object-fit: contain; width: auto; }
+  .silhouette-preview span { bottom: 7px; color: rgba(33, 25, 42, 0.55); font-family: 'DM Mono', monospace; font-size: 0.54rem; letter-spacing: 0.08em; position: absolute; right: 9px; }
+  /* Botones para cambiar entre ojos, gafas, gorras y demas categorias. */
+  .category-tabs { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 13px; }
+  .category-tabs button { background: transparent; border: 1px solid rgba(248, 236, 250, 0.28); color: var(--paper); cursor: pointer; font-family: 'DM Mono', monospace; font-size: 0.55rem; letter-spacing: 0.04em; padding: 8px 9px; text-transform: uppercase; }
+  .category-tabs button:hover, .category-tabs button.is-active { background: var(--acid); border-color: var(--acid); color: var(--ink); }
+  /* Miniaturas de accesorios, ligeramente mas altas que las flechas. */
+  .accessory-choice { height: 66px; }
+
+  /* Ajustes del editor para pantallas pequeñas: una columna y controles apilados. */
+  .builder-block { align-items: stretch; display: flex; gap: 36px; min-height: 0; padding-bottom: 78px; padding-top: 112px; }
+  .builder-intro { max-width: 100%; }
+  .builder-intro h2 { font-size: 3.25rem; }
+  .builder-count { margin-top: 5px; }
+  .builder-workspace { display: flex; flex-direction: column; gap: 32px; }
+  .builder-stage { align-self: center; min-height: 0; width: min(100%, 410px); }
+  .builder-silhouette { max-height: 86%; max-width: 90%; width: 82%; }
+  .builder-controls { width: 100%; }
+  .silhouette-carousel { grid-template-columns: 46px minmax(0, 1fr) 46px; }
+  .carousel-arrow { height: 46px; width: 46px; }
+  .silhouette-preview { height: 145px; }
+  .silhouette-preview img { height: 124px; }
+  .category-tabs { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 8px; }
+  .category-tabs button { flex: 0 0 auto; }
+
 }
 
 /* En teléfonos muy estrechos se reduce solo el título para que sus palabras
    sigan cabiendo completas; el resto de la escala permanece igual. */
 @media (max-width: 370px) {
+
+    .builder-block {
+      display: flex;
+      gap: 36px;
+      min-height: 0;
+      padding-bottom: 78px;
+      padding-top: 112px;
+    }
+
+    .builder-intro { max-width: 100%; }
+    .builder-intro h2 { font-size: 3.25rem; }
+    .builder-count { margin-top: 5px; }
+    .builder-workspace { display: flex; flex-direction: column; gap: 32px; }
+    .builder-stage { align-self: center; box-shadow: 8px 9px 0 rgba(248, 236, 250, 0.13); min-height: 0; width: min(100%, 410px); }
+    .builder-controls { width: 100%; }
+    .silhouette-carousel { grid-template-columns: 46px minmax(0, 1fr) 46px; }
+    .carousel-arrow { height: 46px; width: 46px; }
+    .silhouette-preview { height: 145px; }
+    .silhouette-preview img { height: 124px; }
+    .category-tabs { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 8px; }
+    .category-tabs button { flex: 0 0 auto; }
+    .asset-choice { flex-basis: 54px; height: 54px; }
+    .silhouette-strip .asset-choice { height: 68px; }
   /* Ajustes para teléfonos estrechos, como algunos modelos compactos. */
   h1,
   h2 {
@@ -307,3 +523,4 @@ footer { border-top: 1px solid rgba(33, 25, 42, 0.35); display: flex; font-famil
     padding-right: 16px;
   }
 }
+ 
