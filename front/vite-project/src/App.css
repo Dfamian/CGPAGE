@@ -171,8 +171,8 @@ h1 em, h2 em { color: #ad59bc; font-style: normal; }
 .block-dark .side-note { color: var(--acid); }
 
 /* ===== Editor interactivo del bloque 2 ===== */
-.builder-block { align-items: start; display: grid; gap: clamp(28px, 4vw, 58px); grid-template-columns: minmax(180px, 0.26fr) minmax(0, 1.74fr); min-height: auto; padding-bottom: 62px; padding-top: 94px; padding-left: 30px; padding-right: 30px; }
-.builder-intro { align-self: stretch; display: flex; flex-direction: column; height: 100%; max-width: 300px; padding-top: 8px; }
+.builder-block { align-items: center; display: flex; flex-direction: row-reverse; gap: clamp(28px, 4vw, 58px); grid-template-columns: minmax(180px, 0.26fr) minmax(0, 1.74fr); min-height: auto; padding-bottom: 62px; padding-top: 94px; padding-left: 30px; padding-right: 30px; }
+.builder-intro {  padding-top: 8px; }
 .builder-intro h2 { font-size: clamp(3.4rem, 6vw, 6.7rem); }
 .builder-intro .intro { color: rgba(248, 236, 250, 0.76); }
 .name-control { color: rgba(248, 236, 250, 0.72); display: flex; flex-direction: column; font-family: 'DM Mono', monospace; font-size: 0.68rem; gap: 10px; letter-spacing: 0.06em; margin-top: 12px; text-transform: uppercase; }
