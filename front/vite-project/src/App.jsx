@@ -17,7 +17,8 @@ const catalog = Object.entries(assetFiles).reduce((groups, [path, url]) => {
 Object.values(catalog).forEach((items) => items.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true })))
 const frameAsset = catalog.marco?.[0]
 const fixedCategories = new Set(['siluetas'])
-const verticalCategories = new Set(['ojos sin pestañas', 'ojos con pestañas'])
+const verticalCategories = new Set(['ojos sin pestañas', 'ojos con pestañas', 'gafas', 'Gorras'])
+const faceAlignedCategories = new Set(['aretes', 'Balacas'])
 // Cambia left, top y width para ajustar la posición inicial y escala de cada categoría.
 const layerDefaults = {
   siluetas: { left: 50, top: 50, width: 82, rotate: 0, zIndex: 1 },
@@ -53,7 +54,7 @@ function BuilderBlock() {
       const top = Math.max(5, Math.min(95, ((event.clientY - bounds.top) / bounds.height) * 100))
       setLayers((current) => {
         const currentLayer = current[dragging]
-        const left = verticalCategories.has(dragging) ? currentLayer.left : Math.max(6, Math.min(94, ((event.clientX - bounds.left) / bounds.width) * 100))
+        const left = verticalCategories.has(dragging) || faceAlignedCategories.has(dragging) ? currentLayer.left : Math.max(6, Math.min(94, ((event.clientX - bounds.left) / bounds.width) * 100))
         return { ...current, [dragging]: { ...currentLayer, left, top } }
       })
     }
@@ -63,7 +64,14 @@ function BuilderBlock() {
     return () => { window.removeEventListener('pointermove', moveLayer); window.removeEventListener('pointerup', stopDragging) }
   }, [dragging])
 
-  const chooseAccessory = (item) => setLayers((current) => ({ ...current, [activeCategory]: { ...item, category: activeCategory, ...layerDefaults[activeCategory] } }))
+  const chooseAccessory = (item) => setLayers((current) => {
+    const nextLayers = { ...current, [activeCategory]: { ...item, category: activeCategory, ...layerDefaults[activeCategory] } }
+    if (verticalCategories.has(activeCategory)) {
+      const otherEyeCategory = activeCategory === 'ojos sin pestañas' ? 'ojos con pestañas' : 'ojos sin pestañas'
+      delete nextLayers[otherEyeCategory]
+    }
+    return nextLayers
+  })
   const removeAccessory = () => setLayers((current) => {
     const nextLayers = { ...current }
     delete nextLayers[activeCategory]
