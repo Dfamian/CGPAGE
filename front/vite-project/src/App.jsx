@@ -26,14 +26,44 @@ const layerDefaults = {
 }
 const randomItem = (category) => { const items = catalog[category] ?? []; return items[Math.floor(Math.random() * items.length)] }
 const loadCanvasImage = (src) => new Promise((resolve, reject) => { const image = new Image(); image.onload = () => resolve(image); image.onerror = reject; image.src = src })
+const carouselImages = Object.entries(import.meta.glob('./assets/carrusel/*.{avif,gif,jpeg,jpg,png,webp}', { eager: true, import: 'default', query: '?url' }))
+  .sort(([pathA], [pathB]) => pathA.localeCompare(pathB, undefined, { numeric: true }))
+  .map(([path, url]) => ({ name: path.split('/').at(-1), url }))
 
 function App() {
+  const [activeImage, setActiveImage] = useState(0)
+  const currentImage = carouselImages[activeImage]
+  const changeImage = (direction) => setActiveImage((current) => (current + direction + carouselImages.length) % carouselImages.length)
+
   return <main style={{ '--wallpaper': `url("${wallpaper}")` }}>
-    <header className="site-header"><div className="header-left"><a className="brand" href="#inicio">CABEZAMOS<span>.</span></a><nav><a href="#inicio">Inicio</a><a href="#obra">Obra</a><a href="#contacto">Contacto</a></nav></div><a className="header-logo" href="#inicio"><img src={lettersLogo} alt="Fuego" /></a><a className="menu-link" href="#contacto" aria-label="Abrir contacto"><span></span><span></span><span></span></a></header>
-    <section className="artist-block block-light" id="inicio"><div className="block-copy"><p className="eyebrow">CG SAMO / New Album</p><h1>HOMLESS<br /><em>AND</em> RAPERS</h1><p className="intro">Ven y has parte de nuestro equipo con los CABEZAMOS.</p><a className="outline-button" href="#obra">HAS TU CABEZAMO <span>↘</span></a></div><div className="image-window window-tall" role="img" aria-label="Fragmento del mural y obra del artista"></div><span className="side-note">01 / manifiesto</span></section>
+    <header className="site-header"><div className="header-left"><a className="brand" href="#inicio">CABEZAMOS<span>.</span></a><nav><a href="#inicio">Inicio</a><a href="#obra">Obra</a><a href="#contacto">Contacto</a></nav></div><a className="header-logo" href="#inicio"><img src={lettersLogo} alt="CG SAMO" /></a><a className="menu-link" href="#contacto" aria-label="Abrir contacto"><span></span><span></span><span></span></a></header>
+    <section className="gallery-block" id="inicio" aria-label="Carrusel de imágenes del artista">
+      <p className="eyebrow">CG SAMO / Galería</p>
+      <div className="gallery-carousel" role="region" aria-roledescription="carrusel" aria-label="Galería de imágenes">
+        <button className="gallery-arrow" type="button" onClick={() => changeImage(-1)} disabled={carouselImages.length < 2} aria-label="Foto anterior">←</button>
+        <div className="gallery-slide" aria-live="polite">
+          {currentImage
+            ? <img src={currentImage.url} alt={`Foto ${activeImage + 1}: ${currentImage.name}`} />
+            : <div className="gallery-empty"><span>FOTOS DEL CARRUSEL</span><span>Agrega imágenes cuadradas en src/assets/carrusel/</span></div>}
+        </div>
+        <button className="gallery-arrow" type="button" onClick={() => changeImage(1)} disabled={carouselImages.length < 2} aria-label="Foto siguiente">→</button>
+      </div>
+      <p className="gallery-count">{currentImage ? `${activeImage + 1} / ${carouselImages.length}` : 'Galería pendiente'}</p>
+    </section>
     <BuilderBlock />
-    <section className="artist-block block-light block-contact" id="contacto"><div className="block-copy"><p className="eyebrow">Disponible para colaborar</p><h2>Hagamos algo<br /><em>inolvidable.</em></h2><p className="intro">Murales, portadas, dirección de arte y proyectos que necesiten una voz sin filtro.</p><a className="outline-button dark-button" href="mailto:hola@fuego.studio">Escribir ahora <span>↗</span></a></div><div className="contact-stamp" aria-hidden="true">F<br />/U<br />E<br />G<br />O</div><span className="side-note">03 / contacto</span></section>
-    <footer><span>SNOW. — Estudio independiente</span><span>Instagram / Behance / Mail</span></footer>
+    <section className="title-block" id="titulo-homles" aria-label="Espacio reservado para el título HOMLES AND RAPERS">
+      {/* Coloca aquí el PNG cuando esté listo; su ruta prevista es src/assets/homles-and-rapers.png. */}
+      <div className="title-image-slot" aria-hidden="true"></div>
+    </section>
+    <section className="music-block" id="musica">
+      <p className="eyebrow">04 / El sonido</p>
+      <div className="music-copy">
+        <h2>La música<br /><em>de CG SAMO.</em></h2>
+        <p className="intro">Este espacio presentará el sonido del artista, sus influencias y las historias detrás de sus canciones.</p>
+      </div>
+      <span className="music-note" aria-hidden="true">♪</span>
+    </section>
+    <footer className="site-footer" id="contacto"><span>CG SAMO — HOMLES AND RAPERS</span><span>Redes / Contacto</span></footer>
   </main>
 }
 

@@ -1,16 +1,25 @@
-# React + Vite
+# CG SAMO — HOMLES AND RAPERS
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Página construida con React y Vite. La experiencia se organiza en cinco bloques:
 
-Currently, two official plugins are available:
+1. **Carrusel:** galería centrada para fotografías cuadradas.
+2. **Obra:** editor interactivo de Cabezamos.
+3. **Título:** espacio de pantalla completa reservado para el PNG de HOMLES AND RAPERS.
+4. **Música:** maqueta provisional para presentar el sonido del artista.
+5. **Pie de página:** cierre de la página y espacio para redes o contacto.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+El encabezado permanece fijo, compacto y separado de los enlaces. El desplazamiento vertical ajusta la página obligatoriamente al bloque más cercano.
 
-## React Compiler
+## Fotografías del carrusel
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Guarda las fotografías cuadradas en [`src/assets/carrusel/`](./src/assets/carrusel/). El carrusel las carga automáticamente; admite archivos AVIF, GIF, JPEG, JPG, PNG y WebP, y los ordena por nombre. Consulta las [instrucciones de la carpeta](./src/assets/carrusel/README.md).
 
-## Expanding the ESLint configuration
+Cuando esté listo, el PNG del título puede agregarse en `src/assets/homles-and-rapers.png` y colocarse en el espacio reservado del tercer bloque.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Desarrollo
+
+- `npm run dev`: inicia Vite en modo desarrollo.
+- `npm run lint`: ejecuta ESLint.
+- `npm run build`: genera la versión de producción en `dist/`.
+
+El editor del segundo bloque vive en `src/App.jsx` (`BuilderBlock`) y sus estilos están en `src/App.css`.

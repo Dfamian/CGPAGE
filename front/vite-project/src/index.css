@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 :root {
+  --header-height: 74px;
   font-family: 'Space Grotesk', sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -13,6 +14,20 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: var(--header-height);
+  scroll-snap-type: y mandatory;
+}
+
+@media (max-width: 700px) {
+  :root {
+    --header-height: 60px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
 
 body {

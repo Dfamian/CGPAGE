@@ -44,8 +44,8 @@ main {
   --pink: #e8a5f0;
   /* 100svh tiene en cuenta la altura real disponible en navegadores móviles. */
   min-height: 100svh;
-  /* Evita que sombras, fondos o elementos decorativos creen scroll horizontal. */
-  overflow: hidden;
+  /* Recorta adornos horizontales sin convertir main en otro contenedor de scroll. */
+  overflow-x: clip;
   /* Color de texto heredado por los elementos internos. */
   color: var(--ink);
   /* Color que se ve si la imagen aún no ha cargado o no cubre una zona. */
@@ -62,58 +62,67 @@ main {
 
 /* ===== Navegación superior ===== */
 .site-header {
-  /* Tres zonas: contenido a la izquierda, logotipo al centro y menú a la derecha. */
   align-items: center;
-  /* display: ; */
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-  /* Se coloca sobre el contenido y ocupa todo el ancho. */
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 150px minmax(0, 1fr);
+  background: rgba(248, 236, 250, 0.86);
+  backdrop-filter: blur(12px);
+  height: var(--header-height);
   left: 0;
-  /* El primer valor es vertical; el segundo controla los márgenes laterales. */
-  padding: 22px clamp(20px, 5vw, 72px);
-  position: absolute;
+  padding: 0 clamp(16px, 4vw, 52px);
+  position: fixed;
   right: 0;
   top: 0;
-  /* Deja la navegación por encima de las imágenes. */
-  z-index: 2;
+  z-index: 20;
 }
 /* Agrupa el nombre del estudio y los enlaces del lado izquierdo. */
-.header-left { align-items: center; display: flex; gap: clamp(24px, 4vw, 58px); min-width: 0; }
+.header-left { align-items: center; display: flex; gap: clamp(12px, 2vw, 24px); min-width: 0; }
 /* La marca y los enlaces usan el color oscuro del tema claro. */
 .brand, .site-header a { color: var(--ink); }
 /* Identidad del artista: mayúsculas, peso fuerte y separación entre letras. */
-.brand { font-size: 1.73rem; font-weight: 800; letter-spacing: 0.18em; text-decoration: none; }
+.brand { font-size: 1.25rem; font-weight: 800; letter-spacing: 0.12em; text-decoration: none; white-space: nowrap; }
 /* El punto de la marca funciona como acento de color. */
 .brand span { color: #fe1500; }
 /* Espaciado flexible entre los enlaces del menú. */
-.site-header nav { display: flex; gap: clamp(18px, 3vw, 42px); }
-.site-header nav a { font-size: 0.93rem; letter-spacing: 0.13em; text-decoration: none; text-transform: uppercase; font-weight: 700; transition: color 180ms ease; }
-.site-header nav a:hover { text-decoration: line-through; text-decoration-thickness: 2px; text-decoration-style: double; text-decoration-color: rgba(10, 10, 10, 0.232); }
+.site-header nav { display: flex; gap: clamp(12px, 2vw, 24px); min-width: 0; }
+.site-header nav a { font-size: 0.78rem; letter-spacing: 0.1em; text-decoration: none; text-transform: uppercase; font-weight: 700; white-space: nowrap; transition: color 240ms ease, transform 240ms cubic-bezier(0.2, 0.75, 0.25, 1); }
+.site-header nav a:hover,
+.site-header nav a:focus-visible { color: #ad59bc; transform: translateY(-2px); }
 /* Logotipo central: object-fit evita que la imagen se deforme. */
 .header-logo {
   display: block;
   justify-self: center;
   line-height: 0;
-  /* Cambia estos tres valores para controlar el logo en PC:
-     minimo, tamano ideal y maximo. */
-  width: clamp(290px, 18vw, 300px);
+  width: 100%;
 }
 .header-logo img {
   display: block;
   height: auto;
   max-width: 100%;
+  max-height: 64px;
+  object-fit: contain;
   transition: filter 280ms ease, transform 280ms ease;
 }
-/* Al pasar el ratón se invierten y desplazan los tonos para crear el efecto psicodélico. */
+/* Conserva el efecto original del logo dentro de su espacio reservado. */
 .header-logo:hover img,
 .header-logo:focus-visible img {
   filter: invert(1) saturate(7.2) hue-rotate(130deg) contrast(1.25);
-  transform: scale(1.30) rotate(-10deg);
+  transform: scale(1.3) rotate(-10deg);
 }
 /* El menú se representa con tres líneas, sin depender de una imagen. */
-/* .menu-link { display: grid; gap: 4px; justify-self: end; width: 20px; }
-.menu-link span { background: currentColor; display: block; height: 1px; width: 100%; } */
+.menu-link { display: grid; gap: 5px; justify-self: end; padding: 8px 0 8px 8px; transition: transform 240ms cubic-bezier(0.2, 0.75, 0.25, 1); width: 28px; }
+.menu-link span { background: currentColor; display: block; height: 2px; transition: transform 240ms ease, background-color 240ms ease; width: 100%; }
+.menu-link:hover,
+.menu-link:focus-visible { transform: scale(1.08); }
+.menu-link:hover span,
+.menu-link:focus-visible span { background: #ad59bc; }
 
-/* ===== Estructura común de cada uno de los 3 bloques ===== */
+@media (max-width: 1050px) and (min-width: 701px) {
+  .brand { display: none; }
+  .header-left { gap: 0; }
+}
+
+/* ===== Estructura común de los bloques editoriales ===== */
 .artist-block {
   
   align-items: center;
@@ -274,18 +283,10 @@ footer { border-top: 1px solid rgba(33, 25, 42, 0.35); display: flex; font-famil
   }
 
   .site-header {
-    padding: 18px 20px;
+    grid-template-columns: minmax(0, 1fr) 100px minmax(0, 1fr);
+    padding: 0 16px;
   }
-
-  /* En pantallas pequeñas el logotipo sigue centrado y deja aire a los lados. */
-  .site-header {
-    grid-template-columns: 1fr auto 1fr;
-  }
-
-  /* En movil el logo crece, pero conserva espacio para el menu lateral. */
-  .header-logo {
-    width: clamp(180px, 58vw, 270px);
-  }
+  .header-logo img { max-height: 52px; }
 
   .brand {
     display: none;
@@ -477,7 +478,69 @@ footer { border-top: 1px solid rgba(33, 25, 42, 0.35); display: flex; font-famil
   .silhouette-preview img { height: 124px; }
   .category-tabs { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 8px; }
   .category-tabs button { flex: 0 0 auto; }
+}
 
+/* ===== Bloque 1: carrusel centrado de fotografías cuadradas ===== */
+.gallery-block {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100svh;
+  padding: 120px clamp(20px, 8vw, 110px) 42px;
+  position: relative;
+  text-align: center;
+}
+
+.gallery-block > .eyebrow { margin-bottom: 24px; }
+.gallery-carousel { align-items: center; display: grid; gap: clamp(12px, 3vw, 34px); grid-template-columns: 44px minmax(0, min(62vw, 620px)) 44px; justify-content: center; max-width: 780px; width: 100%; }
+.gallery-slide { aspect-ratio: 1; background: rgba(248, 236, 250, 0.8); box-shadow: 12px 14px 0 rgba(33, 25, 42, 0.82); min-width: 0; overflow: hidden; position: relative; }
+.gallery-slide img { display: block; height: 100%; object-fit: cover; width: 100%; }
+.gallery-empty { align-items: center; background: linear-gradient(145deg, rgba(232, 165, 240, 0.64), rgba(232, 255, 120, 0.62)); display: flex; flex-direction: column; gap: 12px; height: 100%; justify-content: center; padding: 24px; }
+.gallery-empty span:first-child { font-size: clamp(1rem, 3vw, 1.8rem); font-weight: 700; letter-spacing: 0.12em; }
+.gallery-empty span:last-child { font-family: 'DM Mono', monospace; font-size: 0.7rem; line-height: 1.5; }
+.gallery-arrow { align-items: center; background: var(--paper); border: 1px solid var(--ink); color: var(--ink); cursor: pointer; display: flex; font-size: 1.4rem; height: 44px; justify-content: center; transition: background-color 160ms ease, color 160ms ease; width: 44px; }
+.gallery-arrow:hover:not(:disabled), .gallery-arrow:focus-visible { background: var(--ink); color: var(--paper); }
+.gallery-arrow:disabled { cursor: default; opacity: 0.45; }
+.gallery-count { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.12em; margin: 26px 0 0; text-transform: uppercase; }
+
+/* ===== Bloque 3: espacio completo reservado para el PNG del título ===== */
+.title-block { min-height: 100svh; position: relative; }
+.title-image-slot { inset: 0; position: absolute; }
+
+/* ===== Bloque 4: maqueta provisional para presentar la música ===== */
+.music-block { align-items: center; background: var(--ink); color: var(--paper); display: grid; grid-template-columns: minmax(0, 1fr) minmax(180px, 0.55fr); min-height: 100svh; overflow: clip; padding: 120px clamp(24px, 12vw, 170px) 78px; position: relative; }
+.music-block > .eyebrow { align-self: start; color: var(--acid); grid-column: 1 / -1; margin-bottom: 30px; }
+.music-copy { max-width: 650px; position: relative; z-index: 1; }
+.music-copy h2 { font-size: clamp(3.2rem, 8vw, 8rem); }
+.music-copy h2 em { color: var(--acid); }
+.music-copy .intro { color: rgba(248, 236, 250, 0.76); max-width: 380px; }
+.music-note { color: rgba(232, 255, 120, 0.8); font-size: clamp(12rem, 32vw, 32rem); font-weight: 700; justify-self: center; line-height: 0.7; transform: rotate(10deg); }
+
+/* ===== Bloque 5: pie de página ===== */
+.site-footer { align-items: center; background: var(--paper); border-top: 1px solid rgba(33, 25, 42, 0.35); display: flex; font-family: 'DM Mono', monospace; font-size: 0.65rem; justify-content: space-between; letter-spacing: 0.08em; min-height: 140px; padding: 28px clamp(20px, 5vw, 72px); text-transform: uppercase; }
+
+.gallery-block,
+.builder-block,
+.title-block,
+.music-block,
+.site-footer {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+@media (max-width: 700px) {
+  .gallery-block { padding: 110px 16px 42px; }
+  .gallery-carousel { gap: 8px; grid-template-columns: 34px minmax(0, 1fr) 34px; }
+  .gallery-arrow { height: 34px; width: 34px; }
+  .gallery-empty { padding: 12px; }
+  .gallery-empty span:last-child { font-size: 0.58rem; }
+  .music-block { align-content: center; display: flex; flex-direction: column; gap: 24px; min-height: 100svh; padding: 110px 22px 76px; }
+  .music-block > .eyebrow { align-self: flex-start; margin-bottom: 8px; }
+  .music-copy { width: 100%; }
+  .music-copy h2 { font-size: 3.25rem; }
+  .music-note { font-size: 9rem; }
+  .site-footer { align-items: flex-start; }
 }
 
 /* En teléfonos muy estrechos se reduce solo el título para que sus palabras
