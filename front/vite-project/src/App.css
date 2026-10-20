@@ -65,7 +65,7 @@ main {
   align-items: center;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 150px minmax(0, 1fr);
-  background: rgba(248, 236, 250, 0.86);
+  background: rgba(231, 108, 253, 0.163);
   backdrop-filter: blur(12px);
   height: var(--header-height);
   left: 0;
@@ -83,6 +83,8 @@ main {
 .brand { font-size: 1.25rem; font-weight: 800; letter-spacing: 0.12em; text-decoration: none; white-space: nowrap; }
 /* El punto de la marca funciona como acento de color. */
 .brand span { color: #fe1500; }
+.brand-image { display: block; flex: 0 0 auto; height: 52px; width: 126px; }
+.brand-image img { display: block; height: 100%; object-fit: contain; width: 100%; }
 /* Espaciado flexible entre los enlaces del menú. */
 .site-header nav { display: flex; gap: clamp(12px, 2vw, 24px); min-width: 0; }
 .site-header nav a { font-size: 0.78rem; letter-spacing: 0.1em; text-decoration: none; text-transform: uppercase; font-weight: 700; white-space: nowrap; transition: color 240ms ease, transform 240ms cubic-bezier(0.2, 0.75, 0.25, 1); }
@@ -99,7 +101,7 @@ main {
   display: block;
   height: auto;
   max-width: 100%;
-  max-height: 64px;
+  max-height: var(--header-height);
   object-fit: contain;
   transition: filter 280ms ease, transform 280ms ease;
 }
@@ -118,8 +120,15 @@ main {
 .menu-link:focus-visible span { background: #ad59bc; }
 
 @media (max-width: 1050px) and (min-width: 701px) {
-  .brand { display: none; }
+  .brand:not(.brand-image) { display: none; }
+  .brand-image { height: 46px; width: 108px; }
   .header-left { gap: 0; }
+}
+
+@media (max-width: 800px) and (min-width: 701px) {
+  .brand-image { width: 70px; }
+  .site-header nav { gap: 8px; }
+  .site-header nav a { font-size: 0.64rem; letter-spacing: 0.07em; }
 }
 
 /* ===== Estructura común de los bloques editoriales ===== */
@@ -210,7 +219,7 @@ h1 em, h2 em { color: #ad59bc; font-style: normal; }
 .builder-face-eye-right { right: 29%; }
 .builder-face-mouth { border-bottom: 3px solid var(--ink); border-radius: 0 0 50% 50%; bottom: 24%; height: 28px; left: 35%; position: absolute; width: 30%; }
 .builder-silhouette { height: auto; left: 50%; max-height: 86%; max-width: 90%; position: absolute; top: 50%; transform: translate(-50%, -50%); width: 82%; z-index: 1; }
-.builder-silhouette-gradient { background-repeat: no-repeat; background-size: 100% 100%; height: 82%; mask-position: center; mask-repeat: no-repeat; mask-size: contain; pointer-events: auto; }
+.builder-silhouette-gradient { background-repeat: no-repeat; background-size: 100% 100%; mask-position: center; mask-repeat: no-repeat; mask-size: contain; pointer-events: auto; }
 .builder-layer { cursor: grab; height: auto; max-width: none; pointer-events: auto; position: absolute; user-select: none; }
 .builder-layer.is-dragging { cursor: grabbing; filter: drop-shadow(3px 4px 0 rgba(33, 25, 42, 0.28)); }
 .stage-label { bottom: 13px; color: rgba(33, 25, 42, 0.55); font-family: 'DM Mono', monospace; font-size: 0.55rem; left: 15px; letter-spacing: 0.08em; position: absolute; text-transform: uppercase; z-index: 10; }
@@ -288,9 +297,10 @@ footer { border-top: 1px solid rgba(33, 25, 42, 0.35); display: flex; font-famil
   }
   .header-logo img { max-height: 52px; }
 
-  .brand {
+  .brand:not(.brand-image) {
     display: none;
   }
+  .brand-image { height: 42px; width: 72px; }
 
   /* Se ocultan los enlaces pequeños y se conserva el botón de menú. */
   .site-header nav { display: none; }
@@ -494,8 +504,13 @@ footer { border-top: 1px solid rgba(33, 25, 42, 0.35); display: flex; font-famil
 
 .gallery-block > .eyebrow { margin-bottom: 24px; }
 .gallery-carousel { align-items: center; display: grid; gap: clamp(12px, 3vw, 34px); grid-template-columns: 44px minmax(0, min(62vw, 620px)) 44px; justify-content: center; max-width: 780px; width: 100%; }
-.gallery-slide { aspect-ratio: 1; background: rgba(248, 236, 250, 0.8); box-shadow: 12px 14px 0 rgba(33, 25, 42, 0.82); min-width: 0; overflow: hidden; position: relative; }
+.gallery-slide { aspect-ratio: 1; background: rgba(248, 236, 250, 0.8); box-shadow: 12px 14px 0 rgba(33, 25, 42, 0.82); min-width: 0; overflow: hidden; position: relative; border-radius: 20px; }
 .gallery-slide img { display: block; height: 100%; object-fit: cover; width: 100%; }
+.gallery-photo { animation: gallery-photo-arrive 720ms cubic-bezier(0.2, 0.75, 0.25, 1) both; will-change: opacity, transform, filter; }
+@keyframes gallery-photo-arrive {
+  from { filter: blur(8px); opacity: 0.35; transform: translate3d(calc(var(--slide-direction) * 24px), 0, 0) scale(0.96); }
+  to { filter: blur(0); opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+}
 .gallery-empty { align-items: center; background: linear-gradient(145deg, rgba(232, 165, 240, 0.64), rgba(232, 255, 120, 0.62)); display: flex; flex-direction: column; gap: 12px; height: 100%; justify-content: center; padding: 24px; }
 .gallery-empty span:first-child { font-size: clamp(1rem, 3vw, 1.8rem); font-weight: 700; letter-spacing: 0.12em; }
 .gallery-empty span:last-child { font-family: 'DM Mono', monospace; font-size: 0.7rem; line-height: 1.5; }
@@ -504,9 +519,19 @@ footer { border-top: 1px solid rgba(33, 25, 42, 0.35); display: flex; font-famil
 .gallery-arrow:disabled { cursor: default; opacity: 0.45; }
 .gallery-count { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.12em; margin: 26px 0 0; text-transform: uppercase; }
 
-/* ===== Bloque 3: espacio completo reservado para el PNG del título ===== */
-.title-block { min-height: 100svh; position: relative; }
-.title-image-slot { inset: 0; position: absolute; }
+@media (prefers-reduced-motion: reduce) {
+  .gallery-photo { animation: none; }
+}
+
+/* ===== Bloque 3: arte a pantalla completa, con sombra sobre la transparencia del PNG ===== */
+.title-block { align-items: center; display: flex; justify-content: center; min-height: 100svh; overflow: clip; padding: calc(var(--header-height) + 20px) clamp(16px, 4vw, 52px) 20px; position: relative; }
+.title-art { display: block; filter: drop-shadow(0 0 0 rgba(232, 165, 240, 0)); height: auto; max-height: calc(100svh - var(--header-height) - 40px); object-fit: contain; transition: filter 360ms ease, transform 360ms cubic-bezier(0.2, 0.75, 0.25, 1); width: min(96%, 1650px); }
+.title-art:hover,
+.title-art:focus-visible { filter: drop-shadow(0 0 7px rgba(232, 165, 240, 0.9)) drop-shadow(0 0 20px rgba(232, 255, 120, 0.72)); transform: scale(1.018); }
+
+@media (prefers-reduced-motion: reduce) {
+  .title-art { transition: none; }
+}
 
 /* ===== Bloque 4: maqueta provisional para presentar la música ===== */
 .music-block { align-items: center; background: var(--ink); color: var(--paper); display: grid; grid-template-columns: minmax(0, 1fr) minmax(180px, 0.55fr); min-height: 100svh; overflow: clip; padding: 120px clamp(24px, 12vw, 170px) 78px; position: relative; }

@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import wallpaper from './assets/walpaper jpg.jpg'
 import lettersLogo from './assets/Letrass.PNG'
+import cgSamoLogo from './assets/Ilustraciones/CGSAMO-header.png'
+import titleArtwork from './assets/Ilustraciones/samoooooo.png'
 import './App.css'
 
 const assetFiles = import.meta.glob('./assets/accesorios samo/**/*.svg', { eager: true, import: 'default', query: '?url' })
@@ -19,9 +21,11 @@ const frameAsset = catalog.marco?.[0]
 const fixedCategories = new Set(['siluetas'])
 const verticalCategories = new Set(['ojos sin pestañas', 'ojos con pestañas', 'gafas', 'Gorras'])
 const faceAlignedCategories = new Set(['aretes', 'Balacas'])
-// Cambia left, top y width para ajustar la posición inicial y escala de cada categoría.
+// Cada silueta comparte una caja cuadrada; mask-size: contain conserva su forma.
+const silhouetteSize = 60
+// Ajusta left, top y width de los accesorios; las siluetas conservan un tamaño fijo.
 const layerDefaults = {
-  siluetas: { left: 50, top: 50, width: 82, rotate: 0, zIndex: 1 },
+  siluetas: { left: 50, top: 50, width: silhouetteSize, rotate: 0, zIndex: 1 },
   'ojos sin pestañas': { left: 50, top: 49, width: 31, rotate: 0, zIndex: 3 }, 'ojos con pestañas': { left: 50, top: 49, width: 31, rotate: 0, zIndex: 3 }, gafas: { left: 50, top: 49, width: 35, rotate: 0, zIndex: 4 }, aretes: { left: 50, top: 68, width: 55, rotate: 0, zIndex: 5 }, Balacas: { left: 50, top: 22, width: 58, rotate: 0, zIndex: 5 }, Gorras: { left: 50, top: 19, width: 55, rotate: 0, zIndex: 6 }, Headsets: { left: 50, top: 48, width: 48, rotate: 0, zIndex: 5 }, mas: { left: 72, top: 70, width: 22, rotate: -8, zIndex: 7 }, exclamaciones: { left: 77, top: 29, width: 12, rotate: 8, zIndex: 8 },
 }
 const randomItem = (category) => { const items = catalog[category] ?? []; return items[Math.floor(Math.random() * items.length)] }
@@ -32,18 +36,45 @@ const carouselImages = Object.entries(import.meta.glob('./assets/carrusel/*.{avi
 
 function App() {
   const [activeImage, setActiveImage] = useState(0)
+  const [slideDirection, setSlideDirection] = useState(1)
+  const [carouselPaused, setCarouselPaused] = useState(false)
+  const [reduceMotion, setReduceMotion] = useState(false)
   const currentImage = carouselImages[activeImage]
-  const changeImage = (direction) => setActiveImage((current) => (current + direction + carouselImages.length) % carouselImages.length)
+  const changeImage = (direction) => {
+    setSlideDirection(direction)
+    setActiveImage((current) => (current + direction + carouselImages.length) % carouselImages.length)
+  }
+
+  useEffect(() => {
+    const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const updateMotionPreference = () => setReduceMotion(motionPreference.matches)
+    updateMotionPreference()
+    motionPreference.addEventListener('change', updateMotionPreference)
+    return () => motionPreference.removeEventListener('change', updateMotionPreference)
+  }, [])
+
+  useEffect(() => {
+    if (carouselImages.length < 2 || carouselPaused || reduceMotion) return undefined
+    const intervalId = window.setInterval(() => {
+      setSlideDirection(1)
+      setActiveImage((current) => (current + 1) % carouselImages.length)
+    }, 5500)
+    return () => window.clearInterval(intervalId)
+  }, [carouselPaused, reduceMotion])
 
   return <main style={{ '--wallpaper': `url("${wallpaper}")` }}>
-    <header className="site-header"><div className="header-left"><a className="brand" href="#inicio">CABEZAMOS<span>.</span></a><nav><a href="#inicio">Inicio</a><a href="#obra">Obra</a><a href="#contacto">Contacto</a></nav></div><a className="header-logo" href="#inicio"><img src={lettersLogo} alt="CG SAMO" /></a><a className="menu-link" href="#contacto" aria-label="Abrir contacto"><span></span><span></span><span></span></a></header>
+    <header className="site-header"><div className="header-left"><a className="brand brand-image" href="#inicio"><img src={cgSamoLogo} alt="CG SAMO" /></a><nav><a href="#inicio">Inicio</a><a href="#obra">Obra</a><a href="#contacto">Contacto</a></nav></div><a className="header-logo" href="#inicio"><img src={lettersLogo} alt="CG SAMO" /></a><a className="menu-link" href="#contacto" aria-label="Abrir contacto"><span></span><span></span><span></span></a></header>
     <section className="gallery-block" id="inicio" aria-label="Carrusel de imágenes del artista">
       <p className="eyebrow">CG SAMO / Galería</p>
-      <div className="gallery-carousel" role="region" aria-roledescription="carrusel" aria-label="Galería de imágenes">
+      <div className="gallery-carousel" role="region" aria-roledescription="carrusel" aria-label="Galería de imágenes"
+        onMouseEnter={() => setCarouselPaused(true)}
+        onMouseLeave={() => setCarouselPaused(false)}
+        onFocus={() => setCarouselPaused(true)}
+        onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setCarouselPaused(false) }}>
         <button className="gallery-arrow" type="button" onClick={() => changeImage(-1)} disabled={carouselImages.length < 2} aria-label="Foto anterior">←</button>
-        <div className="gallery-slide" aria-live="polite">
+        <div className="gallery-slide" aria-live={carouselPaused ? 'polite' : 'off'}>
           {currentImage
-            ? <img src={currentImage.url} alt={`Foto ${activeImage + 1}: ${currentImage.name}`} />
+            ? <img className="gallery-photo" key={activeImage} src={currentImage.url} alt={`Foto ${activeImage + 1}: ${currentImage.name}`} style={{ '--slide-direction': slideDirection }} />
             : <div className="gallery-empty"><span>FOTOS DEL CARRUSEL</span><span>Agrega imágenes cuadradas en src/assets/carrusel/</span></div>}
         </div>
         <button className="gallery-arrow" type="button" onClick={() => changeImage(1)} disabled={carouselImages.length < 2} aria-label="Foto siguiente">→</button>
@@ -51,9 +82,8 @@ function App() {
       <p className="gallery-count">{currentImage ? `${activeImage + 1} / ${carouselImages.length}` : 'Galería pendiente'}</p>
     </section>
     <BuilderBlock />
-    <section className="title-block" id="titulo-homles" aria-label="Espacio reservado para el título HOMLES AND RAPERS">
-      {/* Coloca aquí el PNG cuando esté listo; su ruta prevista es src/assets/homles-and-rapers.png. */}
-      <div className="title-image-slot" aria-hidden="true"></div>
+    <section className="title-block" id="titulo-homles" aria-label="HOMLES AND RAPERS">
+      <img className="title-art" src={titleArtwork} alt="HOMLES AND RAPERS" />
     </section>
     <section className="music-block" id="musica">
       <p className="eyebrow">04 / El sonido</p>
@@ -76,6 +106,7 @@ function BuilderBlock() {
   const [includeName, setIncludeName] = useState(true)
   const [silhouetteColors, setSilhouetteColors] = useState(['#ff4d6d', '#ffd166'])
   const [stageColors, setStageColors] = useState(['#e8ff78', '#f8ecfa'])
+  const silhouetteScaleLocked = fixedCategories.has(activeCategory)
 
   useEffect(() => {
     const moveLayer = (event) => {
@@ -120,7 +151,7 @@ function BuilderBlock() {
     setLayers(nextLayers)
   }
   const stageGradient = '#ffffff'
-  const silhouetteGradient = `linear-gradient(135deg, ${silhouetteColors[0]}, ${silhouetteColors[1]})`
+  const silhouetteGradient = `radial-gradient(circle, ${silhouetteColors[0]} 0%, ${silhouetteColors[1]} 100%)`
   // Exporta el marco y todas las capas visibles respetando sus posiciones actuales.
   const downloadComposition = async () => {
     const stage = stageRef.current
@@ -148,7 +179,8 @@ function BuilderBlock() {
     }
     for (const layer of Object.values(layers)) {
       const image = await loadCanvasImage(layer.url)
-      const drawWidth = width * layer.width / 100
+      const layerWidth = layer.category === 'siluetas' ? silhouetteSize : layer.width
+      const drawWidth = width * layerWidth / 100
       const drawHeight = layer.category === 'siluetas' ? drawWidth : drawWidth * image.naturalHeight / image.naturalWidth
       const x = width * layer.left / 100
       const y = height * layer.top / 100
@@ -165,7 +197,14 @@ function BuilderBlock() {
         const maskHeight = image.naturalHeight * maskScale
         maskContext.drawImage(image, (drawWidth - maskWidth) / 2, (drawHeight - maskHeight) / 2, maskWidth, maskHeight)
         maskContext.globalCompositeOperation = 'source-in'
-        const gradient = maskContext.createLinearGradient(0, 0, drawWidth, drawHeight)
+        const gradient = maskContext.createRadialGradient(
+          drawWidth / 2,
+          drawHeight / 2,
+          0,
+          drawWidth / 2,
+          drawHeight / 2,
+          Math.hypot(drawWidth, drawHeight) / 2,
+        )
         gradient.addColorStop(0, silhouetteColors[0])
         gradient.addColorStop(1, silhouetteColors[1])
         maskContext.fillStyle = gradient
@@ -184,8 +223,57 @@ function BuilderBlock() {
   }
   return <section className="builder-block block-dark" id="obra">
     <div className="builder-intro"><p className="eyebrow">Cabezamos / Estudio interactivo</p><h2>Haz tu<br /><em>cabezamo.</em></h2><p className="intro">Elige una silueta, mezcla accesorios y arrastra cada pieza hasta encontrar tu personaje.</p><div className="builder-action-panel"><label className="name-control" htmlFor="cabezamo-name"><span>Nombre del cabezamo</span><input id="cabezamo-name" type="text" value={cabezamoName} maxLength="32" onChange={(event) => setCabezamoName(event.target.value)} /></label><label className="name-toggle"><input type="checkbox" checked={includeName} onChange={(event) => setIncludeName(event.target.checked)} /><span>Incluir nombre al descargar</span></label><div className="builder-actions"><button className="outline-button builder-action" type="button" onClick={randomize}>Mezcla libre <span>✦</span></button><button className="text-action" type="button" onClick={() => setLayers({})}>Limpiar composición <span>↺</span></button><button className="text-action download-action" type="button" onClick={downloadComposition}>Descargar cabezamo <span>↓</span></button></div></div><span className="builder-count">{Object.keys(layers).length} piezas activas</span></div>
-    <div className="builder-workspace"><div className="builder-stage" ref={stageRef} aria-label="Composición interactiva" style={{ background: stageGradient }}>{frameAsset && <img className="builder-frame" src={frameAsset.url} alt="" aria-hidden="true" />}{Object.values(layers).map((layer) => layer.category === 'siluetas' ? <div className={`builder-layer builder-silhouette-gradient ${dragging === layer.category ? 'is-dragging' : ''}`} key={layer.category} role="img" aria-label="Silueta seleccionada" style={{ left: `${layer.left}%`, top: `${layer.top}%`, width: `${layer.width}%`, height: `${layer.width}%`, zIndex: layer.zIndex, transform: `translate(-50%, -50%) rotate(${layer.rotate}deg)`, background: silhouetteGradient, WebkitMaskImage: `url("${layer.url}")`, maskImage: `url("${layer.url}")` }} onPointerDown={(event) => { event.preventDefault(); setActiveCategory(layer.category); setDragging(fixedCategories.has(layer.category) ? null : layer.category) }} /> : <img className={`builder-layer ${dragging === layer.category ? 'is-dragging' : ''}`} key={layer.category} src={layer.url} alt={`${categoryLabels[layer.category]} seleccionados`} style={{ left: `${layer.left}%`, top: `${layer.top}%`, width: `${layer.width}%`, zIndex: layer.zIndex, transform: `translate(-50%, -50%) rotate(${layer.rotate}deg)` }} onPointerDown={(event) => { event.preventDefault(); setActiveCategory(layer.category); setDragging(fixedCategories.has(layer.category) ? null : layer.category) }} />)}<span className="stage-label">arrastra / combina</span></div>
-      <div className="builder-controls"><div className="control-section"><div className="control-heading"><span>01</span><strong>Escala la pieza activa</strong></div><label className="scale-control" htmlFor="piece-scale"><span>{layers[activeCategory] ? `${Math.round(layers[activeCategory].width)}%` : 'Elige una pieza'}</span><input id="piece-scale" type="range" min="8" max="85" value={layers[activeCategory]?.width ?? 30} disabled={!layers[activeCategory]} onChange={(event) => setLayers((current) => ({ ...current, [activeCategory]: { ...current[activeCategory], width: Number(event.target.value) } }))} /></label></div>{activeCategory === 'siluetas' && <div className="control-section color-controls"><div className="control-heading"><span>02</span><strong>Degradado de silueta</strong></div><div className="color-pickers"><label>Inicio <input type="color" value={silhouetteColors[0]} onChange={(event) => setSilhouetteColors(([current, end]) => [event.target.value, end])} /></label><label>Final <input type="color" value={silhouetteColors[1]} onChange={(event) => setSilhouetteColors(([start]) => [start, event.target.value])} /></label></div></div>}<div className="control-section color-controls"><div className="control-heading"><span>{activeCategory === 'siluetas' ? '03' : '02'}</span><strong>Fondo del lienzo</strong></div><div className="color-pickers"><label>Inicio <input type="color" value={stageColors[0]} onChange={(event) => setStageColors(([current, end]) => [event.target.value, end])} /></label><label>Final <input type="color" value={stageColors[1]} onChange={(event) => setStageColors(([start]) => [start, event.target.value])} /></label></div></div><div className="control-section"><div className="control-heading"><span>{activeCategory === 'siluetas' ? '04' : '03'}</span><strong>Añade una pieza</strong><button className="remove-action" type="button" onClick={removeAccessory} disabled={!layers[activeCategory]} aria-label={`Quitar ${categoryLabels[activeCategory]}`}>Quitar <span>×</span></button></div><div className="category-tabs" role="tablist">{categoryOrder.map((category) => <button className={activeCategory === category ? 'is-active' : ''} key={category} type="button" onClick={() => setActiveCategory(category)}>{categoryLabels[category]}</button>)}</div><div className="asset-strip accessory-strip">{(catalog[activeCategory] ?? []).map((item) => <button className={`asset-choice accessory-choice ${layers[activeCategory]?.id === item.id ? 'is-selected' : ''}`} key={item.id} type="button" onClick={() => chooseAccessory(item)}><img src={item.url} alt="" /></button>)}</div></div></div></div><span className="side-note">02 / laboratorio visual</span>
+    <div className="builder-workspace"><div className="builder-stage" ref={stageRef} aria-label="Composición interactiva" style={{ background: stageGradient }}>{frameAsset && <img className="builder-frame" src={frameAsset.url} alt="" aria-hidden="true" />}{Object.values(layers).map((layer) => {
+      const layerSize = layer.category === 'siluetas' ? silhouetteSize : layer.width
+      return layer.category === 'siluetas'
+        ? <div className={`builder-layer builder-silhouette-gradient ${dragging === layer.category ? 'is-dragging' : ''}`} key={layer.category} role="img" aria-label="Silueta seleccionada" style={{ left: `${layer.left}%`, top: `${layer.top}%`, width: `${layerSize}%`, height: `${layerSize}%`, zIndex: layer.zIndex, transform: `translate(-50%, -50%) rotate(${layer.rotate}deg)`, background: silhouetteGradient, WebkitMaskImage: `url("${layer.url}")`, maskImage: `url("${layer.url}")` }} onPointerDown={(event) => { event.preventDefault(); setActiveCategory(layer.category); setDragging(null) }} />
+        : <img className={`builder-layer ${dragging === layer.category ? 'is-dragging' : ''}`} key={layer.category} src={layer.url} alt={`${categoryLabels[layer.category]} seleccionados`} style={{ left: `${layer.left}%`, top: `${layer.top}%`, width: `${layerSize}%`, zIndex: layer.zIndex, transform: `translate(-50%, -50%) rotate(${layer.rotate}deg)` }} onPointerDown={(event) => { event.preventDefault(); setActiveCategory(layer.category); setDragging(fixedCategories.has(layer.category) ? null : layer.category) }} />
+    })}<span className="stage-label">arrastra / combina</span></div>
+      <div className="builder-controls">
+        <div className="control-section">
+          <div className="control-heading"><span>01</span><strong>Escala la pieza activa</strong></div>
+          <label className="scale-control" htmlFor="piece-scale">
+            <span>{silhouetteScaleLocked ? 'Tamaño fijo' : layers[activeCategory] ? `${Math.round(layers[activeCategory].width)}%` : 'Elige una pieza'}</span>
+            <input
+              id="piece-scale"
+              type="range"
+              min="8"
+              max="85"
+              value={silhouetteScaleLocked ? silhouetteSize : layers[activeCategory]?.width ?? 30}
+              disabled={!layers[activeCategory] || silhouetteScaleLocked}
+              onChange={(event) => setLayers((current) => ({ ...current, [activeCategory]: { ...current[activeCategory], width: Number(event.target.value) } }))}
+            />
+          </label>
+        </div>
+        {activeCategory === 'siluetas' && <div className="control-section color-controls">
+          <div className="control-heading"><span>02</span><strong>Degradado de silueta</strong></div>
+          <div className="color-pickers">
+            <label>Inicio <input type="color" value={silhouetteColors[0]} onChange={(event) => setSilhouetteColors(([current, end]) => [event.target.value, end])} /></label>
+            <label>Final <input type="color" value={silhouetteColors[1]} onChange={(event) => setSilhouetteColors(([start]) => [start, event.target.value])} /></label>
+          </div>
+        </div>}
+        <div className="control-section color-controls">
+          <div className="control-heading"><span>{activeCategory === 'siluetas' ? '03' : '02'}</span><strong>Fondo del lienzo</strong></div>
+          <div className="color-pickers">
+            <label>Inicio <input type="color" value={stageColors[0]} onChange={(event) => setStageColors(([current, end]) => [event.target.value, end])} /></label>
+            <label>Final <input type="color" value={stageColors[1]} onChange={(event) => setStageColors(([start]) => [start, event.target.value])} /></label>
+          </div>
+        </div>
+        <div className="control-section">
+          <div className="control-heading">
+            <span>{activeCategory === 'siluetas' ? '04' : '03'}</span><strong>Añade una pieza</strong>
+            <button className="remove-action" type="button" onClick={removeAccessory} disabled={!layers[activeCategory]} aria-label={`Quitar ${categoryLabels[activeCategory]}`}>Quitar <span>×</span></button>
+          </div>
+          <div className="category-tabs" role="tablist">
+            {categoryOrder.map((category) => <button className={activeCategory === category ? 'is-active' : ''} key={category} type="button" onClick={() => setActiveCategory(category)}>{categoryLabels[category]}</button>)}
+          </div>
+          <div className="asset-strip accessory-strip">
+            {(catalog[activeCategory] ?? []).map((item) => <button className={`asset-choice accessory-choice ${layers[activeCategory]?.id === item.id ? 'is-selected' : ''}`} key={item.id} type="button" onClick={() => chooseAccessory(item)}><img src={item.url} alt="" /></button>)}
+          </div>
+        </div>
+      </div>
+    </div>
+      <span className="side-note">02 / laboratorio visual</span>
   </section>
 }
 
