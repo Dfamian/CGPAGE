@@ -36,8 +36,8 @@ const carouselImages = Object.entries(import.meta.glob('./assets/carrusel/*.{avi
 
 function App() {
   const [activeImage, setActiveImage] = useState(0)
+  const [expandedImage, setExpandedImage] = useState(null)
   const [slideDirection, setSlideDirection] = useState(1)
-  const [carouselPaused, setCarouselPaused] = useState(false)
   const [reduceMotion, setReduceMotion] = useState(false)
   const currentImage = carouselImages[activeImage]
   const changeImage = (direction) => {
@@ -54,33 +54,74 @@ function App() {
   }, [])
 
   useEffect(() => {
-    if (carouselImages.length < 2 || carouselPaused || reduceMotion) return undefined
+    if (carouselImages.length < 2 || reduceMotion) return undefined
     const intervalId = window.setInterval(() => {
       setSlideDirection(1)
       setActiveImage((current) => (current + 1) % carouselImages.length)
-    }, 5500)
+    }, 4200)
     return () => window.clearInterval(intervalId)
-  }, [carouselPaused, reduceMotion])
+  }, [reduceMotion])
+
+  useEffect(() => {
+    if (expandedImage === null) return undefined
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') setExpandedImage(null)
+      if (event.key === 'ArrowLeft') setExpandedImage((current) => (current - 1 + carouselImages.length) % carouselImages.length)
+      if (event.key === 'ArrowRight') setExpandedImage((current) => (current + 1) % carouselImages.length)
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.body.style.overflow = previousOverflow
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [expandedImage])
 
   return <main style={{ '--wallpaper': `url("${wallpaper}")` }}>
     <header className="site-header"><div className="header-left"><nav><a href="#inicio">Inicio</a><a href="#obra">Obra</a><a href="#contacto">Contacto</a></nav></div><a className="header-logo" href="#inicio"><img src={cgSamoLogo} alt="CG SAMO" /></a><a className="menu-link" href="#contacto" aria-label="Abrir contacto"><span></span><span></span><span></span></a></header>
     <section className="gallery-block" id="inicio" aria-label="Carrusel de imágenes del artista">
-      <p className="eyebrow">CG SAMO / Galería</p>
-      <div className="gallery-carousel" role="region" aria-roledescription="carrusel" aria-label="Galería de imágenes"
-        onMouseEnter={() => setCarouselPaused(true)}
-        onMouseLeave={() => setCarouselPaused(false)}
-        onFocus={() => setCarouselPaused(true)}
-        onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setCarouselPaused(false) }}>
+      <div className="gallery-heading">
+        <p className="eyebrow">01 / Archivo visual</p>
+        <h1>SAMO <em>PAGE</em></h1>
+        <p>Una mirada al universo visual de CG SAMO</p>
+      </div>
+      <div className="gallery-carousel" role="region" aria-roledescription="carrusel" aria-label="Galería de imágenes">
         <button className="gallery-arrow" type="button" onClick={() => changeImage(-1)} disabled={carouselImages.length < 2} aria-label="Foto anterior">←</button>
-        <div className="gallery-slide" aria-live={carouselPaused ? 'polite' : 'off'}>
-          {currentImage
-            ? <img className="gallery-photo" key={activeImage} src={currentImage.url} alt={`Foto ${activeImage + 1}: ${currentImage.name}`} style={{ '--slide-direction': slideDirection }} />
-            : <div className="gallery-empty"><span>FOTOS DEL CARRUSEL</span><span>Agrega imágenes cuadradas en src/assets/carrusel/</span></div>}
+        <div className="gallery-stage" aria-live="off">
+          {carouselImages.length
+            ? carouselImages.map((image, index) => {
+              const offset = ((index - activeImage + carouselImages.length + Math.floor(carouselImages.length / 2)) % carouselImages.length) - Math.floor(carouselImages.length / 2)
+              if (Math.abs(offset) > 2) return null
+              return <button
+                className={`gallery-card ${offset === 0 ? 'is-current' : ''}`}
+                key={image.url}
+                type="button"
+                aria-label={`Ver imagen ${index + 1} ampliada: ${image.name}`}
+                aria-current={offset === 0 ? 'true' : undefined}
+                onClick={() => {
+                  setActiveImage(index)
+                  setExpandedImage(index)
+                }}
+                style={{ '--card-offset': offset, '--card-depth': Math.abs(offset), '--card-scale': Math.max(0.58, 1 - Math.abs(offset) * 0.2), '--slide-direction': slideDirection }}
+              >
+                <img src={image.url} alt={`Foto ${index + 1}: ${image.name}`} />
+              </button>
+            })
+            : <div className="gallery-empty"><span>FOTOS DEL CARRUSEL</span><span>Agrega imágenes en src/assets/carrusel/</span></div>}
         </div>
         <button className="gallery-arrow" type="button" onClick={() => changeImage(1)} disabled={carouselImages.length < 2} aria-label="Foto siguiente">→</button>
       </div>
-      <p className="gallery-count">{currentImage ? `${activeImage + 1} / ${carouselImages.length}` : 'Galería pendiente'}</p>
+      <div className="gallery-footer">
+        <p className="gallery-count">{currentImage ? `${activeImage + 1} / ${carouselImages.length}` : 'Galería pendiente'}</p>
+        <span>Selecciona una imagen para ampliar <span aria-hidden="true">↗</span></span>
+      </div>
     </section>
+    {expandedImage !== null && <div className="gallery-lightbox" role="dialog" aria-modal="true" aria-label={`Imagen ampliada: ${carouselImages[expandedImage].name}`} onClick={() => setExpandedImage(null)}>
+      <button className="gallery-lightbox-close" type="button" onClick={() => setExpandedImage(null)} aria-label="Cerrar imagen ampliada">×</button>
+      <img src={carouselImages[expandedImage].url} alt={`Imagen ampliada: ${carouselImages[expandedImage].name}`} onClick={(event) => event.stopPropagation()} />
+      <span className="gallery-lightbox-count">{expandedImage + 1} / {carouselImages.length}</span>
+    </div>}
     <BuilderBlock />
     <section className="project-block" id="titulo-homles" aria-labelledby="music-title">
       <div className="project-copy">
@@ -96,10 +137,17 @@ function App() {
     </section>
     <section className="music-block" id="musica">
       <p className="eyebrow">04 / El sonido</p>
-      <div className="music-copy">
-        <h2>Descubre la música<br /><em>de CG SAMO.</em></h2>
+      <div className="music-content">
+        <p className="music-overline">Rap · exploración · libertad</p>
+        <h2 id="music-title">Descubre la música <em>de CG SAMO.</em></h2>
+        <p className="music-description">Un viaje por el rap y sus infinitas formas, sin etiquetas ni un lugar definitivo al que pertenecer.</p>
+        <a className="music-link" href="#titulo-homles">Conoce Homeless &amp; Rappers <span aria-hidden="true">↗</span></a>
       </div>
-      <span className="music-note" aria-hidden="true">♪</span>
+      <div className="music-project">
+        <span>Proyecto destacado</span>
+        <strong>HOMELESS<br />&amp; RAPPERS</strong>
+        <span>Mixtape de CG SAMO</span>
+      </div>
     </section>
     <footer className="site-footer" id="contacto">
       <span className="footer-brand">CG SAMO — HOMELESS &amp; RAPPERS</span>
@@ -107,7 +155,7 @@ function App() {
         <span>Redes sociales</span>
         <span className="footer-socials-pending">Enlaces próximamente</span>
       </div>
-      <span className="footer-credit">Creado por <strong>Snow</strong></span>
+      <span className="footer-credit">Creado por <a href="https://www.instagram.com/damian12_yiyi?exln=MTRnN3hyemRsY214aA%3D%3D&amp;utm_source=qr" target="_blank" rel="noopener noreferrer">Snow</a></span>
     </footer>
   </main>
 }
@@ -119,6 +167,7 @@ function BuilderBlock() {
   const [dragging, setDragging] = useState(null)
   const [cabezamoName, setCabezamoName] = useState('Mi cabezamo')
   const [includeName, setIncludeName] = useState(true)
+  const [shareMessage, setShareMessage] = useState('')
   const [silhouetteColors, setSilhouetteColors] = useState(['#ff4d6d', '#ffd166'])
   const [stageColors, setStageColors] = useState(['#e8ff78', '#f8ecfa'])
   const silhouetteScaleLocked = fixedCategories.has(activeCategory)
@@ -167,16 +216,16 @@ function BuilderBlock() {
   }
   const stageGradient = '#ffffff'
   const silhouetteGradient = `radial-gradient(circle, ${silhouetteColors[0]} 0%, ${silhouetteColors[1]} 100%)`
-  // Exporta el marco y todas las capas visibles respetando sus posiciones actuales.
-  const downloadComposition = async () => {
+  const createCompositionCanvas = async () => {
     const stage = stageRef.current
-    if (!stage) return
+    if (!stage) return null
     const width = 900
     const height = Math.round(width * 1.08)
     const canvas = document.createElement('canvas')
     canvas.width = width
     canvas.height = height
     const context = canvas.getContext('2d')
+    if (!context) throw new Error('No se pudo preparar la imagen en este navegador.')
     context.fillStyle = '#ffffff'
     context.fillRect(0, 0, width, height)
     const drawContain = (image, x, y, boxWidth, boxHeight) => {
@@ -207,6 +256,7 @@ function BuilderBlock() {
         maskCanvas.width = drawWidth
         maskCanvas.height = drawHeight
         const maskContext = maskCanvas.getContext('2d')
+        if (!maskContext) throw new Error('No se pudo preparar la silueta para exportarla.')
         const maskScale = Math.min(drawWidth / image.naturalWidth, drawHeight / image.naturalHeight)
         const maskWidth = image.naturalWidth * maskScale
         const maskHeight = image.naturalHeight * maskScale
@@ -230,14 +280,69 @@ function BuilderBlock() {
       }
       context.restore()
     }
-    const link = document.createElement('a')
     const safeName = cabezamoName.trim().replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '') || 'cabezamo'
-    link.download = `${safeName}.png`
-    link.href = canvas.toDataURL('image/png')
-    link.click()
+    return { canvas, safeName }
+  }
+  const downloadComposition = async () => {
+    try {
+      const composition = await createCompositionCanvas()
+      if (!composition) return
+      const link = document.createElement('a')
+      link.download = `${composition.safeName}.png`
+      link.href = composition.canvas.toDataURL('image/png')
+      link.click()
+      setShareMessage('Composición descargada.')
+    } catch (error) {
+      setShareMessage(`No se pudo descargar la composición: ${error.message}`)
+    }
+  }
+  const copyMusicCaption = async () => {
+    const caption = 'Escucha CG SAMO - HOMELESS & RAPPERS: https://ffm.to/homeless-rappers'
+    try {
+      await navigator.clipboard.writeText(caption)
+      setShareMessage('Enlace copiado. Pégalo en el texto de tu publicación de Instagram.')
+      return true
+    } catch (error) {
+      setShareMessage(`No se pudo copiar el enlace: ${error.message}`)
+      return false
+    }
+  }
+  const shareComposition = async () => {
+    try {
+      const composition = await createCompositionCanvas()
+      if (!composition) return
+      const blob = await new Promise((resolve, reject) => {
+        composition.canvas.toBlob((result) => {
+          if (result) resolve(result)
+          else reject(new Error('No se pudo generar el archivo de la composición.'))
+        }, 'image/png')
+      })
+      const file = new File([blob], `${composition.safeName}.png`, { type: 'image/png' })
+      const caption = 'Escucha CG SAMO - HOMELESS & RAPPERS: https://ffm.to/homeless-rappers'
+      if (navigator.share && navigator.canShare?.({ files: [file] })) {
+        await navigator.share({ files: [file], title: 'Mi Cabezamo', text: caption })
+        setShareMessage('Composición compartida. Instagram puede omitir el enlace del texto; cópialo con «Copiar enlace musical» y pégalo en el caption.')
+        return
+      }
+      const downloadLink = document.createElement('a')
+      downloadLink.download = `${composition.safeName}.png`
+      downloadLink.href = URL.createObjectURL(blob)
+      downloadLink.click()
+      window.setTimeout(() => URL.revokeObjectURL(downloadLink.href), 1000)
+      const captionCopied = await copyMusicCaption()
+      setShareMessage(captionCopied
+        ? 'Imagen descargada y enlace musical copiado. Adjunta la imagen y pega el enlace en Instagram.'
+        : 'Imagen descargada. Copia el enlace musical con el botón para incluirlo en Instagram.')
+    } catch (error) {
+      if (error.name === 'AbortError') {
+        setShareMessage('Compartir cancelado.')
+        return
+      }
+      setShareMessage(`No se pudo compartir la composición: ${error.message}`)
+    }
   }
   return <section className="builder-block block-dark" id="obra">
-    <div className="builder-intro"><p className="eyebrow">Cabezamos / Estudio interactivo</p><h2>CREA TU<br /><em>CABEZAMO!</em></h2><p className="intro">Los cabezazos fueron creados en un inicio exclusivamente para los creativos y artistas que aportaron significativamente al disco, pero ahora tu también puedes ser parte, crea tu cabezamo aquí!.</p><div className="builder-action-panel"><label className="name-control" htmlFor="cabezamo-name"><span>Nombre del cabezamo</span><input id="cabezamo-name" type="text" value={cabezamoName} maxLength="32" onChange={(event) => setCabezamoName(event.target.value)} /></label><label className="name-toggle"><input type="checkbox" checked={includeName} onChange={(event) => setIncludeName(event.target.checked)} /><span>Incluir nombre al descargar</span></label><div className="builder-actions"><button className="outline-button builder-action" type="button" onClick={randomize}>Mezcla libre <span>✦</span></button><button className="text-action" type="button" onClick={() => setLayers({})}>Limpiar composición <span>↺</span></button><button className="text-action download-action" type="button" onClick={downloadComposition}>Descargar cabezamo <span>↓</span></button></div></div><span className="builder-count">{Object.keys(layers).length} piezas activas</span></div>
+    <div className="builder-intro"><p className="eyebrow">Cabezamos / Estudio interactivo</p><h2>CREA TU<br /><em>CABEZAMO!</em></h2><p className="intro">Los cabezazos fueron creados en un inicio exclusivamente para los creativos y artistas que aportaron significativamente al disco, pero ahora tu también puedes ser parte, crea tu cabezamo aquí!.</p><div className="builder-action-panel"><label className="name-control" htmlFor="cabezamo-name"><span>Nombre del cabezamo</span><input id="cabezamo-name" type="text" value={cabezamoName} maxLength="32" onChange={(event) => setCabezamoName(event.target.value)} /></label><label className="name-toggle"><input type="checkbox" checked={includeName} onChange={(event) => setIncludeName(event.target.checked)} /><span>Incluir nombre al descargar</span></label><div className="builder-actions"><button className="outline-button builder-action" type="button" onClick={randomize}>Mezcla libre <span>✦</span></button><button className="text-action" type="button" onClick={() => setLayers({})}>Limpiar composición <span>↺</span></button><button className="text-action download-action" type="button" onClick={downloadComposition}>Descargar cabezamo <span>↓</span></button><button className="text-action share-action" type="button" onClick={shareComposition}>Compartir CABEZAMO <span>↗</span></button><button className="text-action share-action" type="button" onClick={copyMusicCaption}>Ayudanos a compartir , te lo agradeceria mucho lind@" <span>⧉</span></button></div>{shareMessage && <p className="share-message" role="status">{shareMessage}</p>}</div><span className="builder-count">{Object.keys(layers).length} piezas activas</span></div>
     <div className="builder-workspace"><div className="builder-stage" ref={stageRef} aria-label="Composición interactiva" style={{ background: stageGradient }}>{frameAsset && <img className="builder-frame" src={frameAsset.url} alt="" aria-hidden="true" />}{Object.values(layers).map((layer) => {
       const layerSize = layer.category === 'siluetas' ? silhouetteSize : layer.width
       return layer.category === 'siluetas'
