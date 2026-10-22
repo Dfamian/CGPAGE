@@ -76,11 +76,10 @@ main {
   z-index: 20;
   margin: 5px;
   border-radius: 12px; 
-}
-.site-header:hover{
-  background: rgba(231, 108, 253, 0.618);
   transition: background 0.5s ease-in-out;
-  
+}
+.site-header:hover {
+  background: rgba(231, 108, 253, 0.618);
 }
 /* Agrupa los enlaces de navegación del lado izquierdo. */
 .header-left { align-items: center; display: flex; gap: clamp(12px, 2vw, 24px); min-width: 0; }
@@ -195,7 +194,7 @@ h1 em, h2 em { color: #ad59bc; font-style: normal; }
 .builder-actions { align-items: stretch; display: flex; flex-direction: column; gap: 12px; margin-top: 0; }
 .builder-actions .builder-action,
 .builder-actions .text-action { justify-content: space-between; min-height: 48px; width: 100%; }
-.builder-action { color: var(--ink); cursor: pointer; }
+.builder-action { color: var(--ink); cursor: pointer; transition: background-color 180ms ease, color 180ms ease; }
 .builder-action:hover { background: var(--acid); color: var(--ink); }
 .text-action { background: transparent; border: 1px solid rgba(232, 255, 120, 0.58); color: var(--acid); cursor: pointer; font-family: 'DM Mono', monospace; font-size: 0.67rem; letter-spacing: 0.06em; padding: 11px 13px; text-align: left; text-transform: uppercase; transition: background-color 160ms ease, color 160ms ease, transform 160ms ease; }
 .text-action:hover, .text-action:focus-visible { background: var(--acid); color: var(--ink); outline: none; transform: translateY(-2px); }
@@ -229,7 +228,7 @@ h1 em, h2 em { color: #ad59bc; font-style: normal; }
 .color-pickers label { align-items: center; color: rgba(248, 236, 250, 0.72); display: flex; font-family: 'DM Mono', monospace; font-size: 0.62rem; gap: 8px; text-transform: uppercase; }
 .color-pickers input { background: transparent; border: 1px solid rgba(248, 236, 250, 0.3); cursor: pointer; height: 30px; padding: 2px; width: 54px; }
 .builder-controls > .color-controls:nth-last-child(2) { display: none; }
-.remove-action { background: transparent; border: 1px solid rgba(248, 236, 250, 0.35); color: var(--paper); cursor: pointer; font-family: 'DM Mono', monospace; font-size: 0.54rem; letter-spacing: 0.05em; margin-left: auto; padding: 6px 8px; text-transform: uppercase; }
+.remove-action { background: transparent; border: 1px solid rgba(248, 236, 250, 0.35); color: var(--paper); cursor: pointer; font-family: 'DM Mono', monospace; font-size: 0.54rem; letter-spacing: 0.05em; margin-left: auto; padding: 6px 8px; text-transform: uppercase; transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease; }
 .remove-action:hover:not(:disabled), .remove-action:focus-visible:not(:disabled) { background: #ed5b4d; border-color: #ed5b4d; color: var(--paper); outline: none; }
 .remove-action:disabled { cursor: not-allowed; opacity: 0.35; }
 .remove-action span { font-size: 0.95rem; margin-left: 4px; }
@@ -245,7 +244,7 @@ h1 em, h2 em { color: #ad59bc; font-style: normal; }
 .silhouette-preview img { height: 94px; max-width: 85%; object-fit: contain; width: auto; }
 .silhouette-preview span { bottom: 7px; color: rgba(33, 25, 42, 0.55); font-family: 'DM Mono', monospace; font-size: 0.54rem; letter-spacing: 0.08em; position: absolute; right: 9px; }
 .category-tabs { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 13px; }
-.category-tabs button { background: transparent; border: 1px solid rgba(248, 236, 250, 0.28); color: var(--paper); cursor: pointer; font-family: 'DM Mono', monospace; font-size: 0.55rem; letter-spacing: 0.04em; padding: 8px 9px; text-transform: uppercase; }
+.category-tabs button { background: transparent; border: 1px solid rgba(248, 236, 250, 0.28); color: var(--paper); cursor: pointer; font-family: 'DM Mono', monospace; font-size: 0.55rem; letter-spacing: 0.04em; padding: 8px 9px; text-transform: uppercase; transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease; }
 .category-tabs button:hover, .category-tabs button.is-active { background: var(--acid); border-color: var(--acid); color: var(--ink); }
 .accessory-choice { height: 66px; }
 
@@ -259,6 +258,7 @@ h1 em, h2 em { color: #ad59bc; font-style: normal; }
 .block-contact { min-height: 560px; }
 /* Sello tipográfico decorativo para equilibrar la composición final. */
 .contact-stamp { align-items: center; border: 1px solid var(--ink); color: #ed5b4d; display: flex; font-size: clamp(3rem, 8vw, 7rem); font-weight: 800; justify-content: center; line-height: 0.68; min-height: 390px; transform: rotate(6deg); width: min(100%, 360px); }
+.dark-button { transition: background-color 180ms ease, color 180ms ease; }
 .dark-button:hover { background: #ed5b4d; color: var(--paper); }
 /* El pie separa los datos de estudio y redes con una línea superior. */
 footer { border-top: 1px solid rgba(33, 25, 42, 0.35); display: flex; font-family: 'DM Mono', monospace; font-size: 0.6rem; justify-content: space-between; letter-spacing: 0.08em; padding: 22px clamp(20px, 5vw, 72px); text-transform: uppercase; }
@@ -524,9 +524,9 @@ footer { border-top: 1px solid rgba(33, 25, 42, 0.35); display: flex; font-famil
 .project-description h2 { font-size: clamp(2.25rem, 4vw, 3.8rem); line-height: 1.05; }
 .project-description h3 { color: var(--acid); font-size: clamp(1.65rem, 3.2vw, 2.6rem); letter-spacing: -0.035em; line-height: 1.12; margin: 10px 0 0; }
 .project-description p { color: rgba(248, 236, 250, 0.86); font-size: clamp(0.95rem, 1.1vw, 1.05rem); line-height: 1.75; margin: 22px 0 0; max-width: 60ch; text-wrap: pretty; }
-.project-cover { aspect-ratio: 1; display: block; justify-self: end; max-height: min(68svh, 690px); object-fit: contain; width: min(100%, 600px); }
+.project-cover { aspect-ratio: 1; box-shadow: 10px 10px 0 #f3eded63; display: block; justify-self: end; max-height: min(68svh, 690px); object-fit: contain; transition: box-shadow 1s ease; width: min(100%, 600px); }
 .music-note { color: rgba(232, 255, 120, 0.8); font-size: clamp(12rem, 32vw, 32rem); font-weight: 700; justify-self: center; line-height: 0.7; transform: rotate(10deg); }
-
+.project-cover:hover, .project-cover:focus-visible { box-shadow: 0 0 0 #f3eded63, 0 0 100px rgba(167, 0, 0, 0.95), 0 0 24px rgba(56, 4, 212, 0.65); }
 /* ===== Bloque 4: presentación general de la música ===== */
 .music-block { align-items: center; color: var(--paper); display: grid; grid-template-columns: minmax(0, 1fr) minmax(180px, 0.55fr); min-height: 100svh; overflow: clip; padding: 120px clamp(24px, 12vw, 170px) 78px; position: relative; }
 .music-block > .eyebrow { align-self: start; color: var(--acid); grid-column: 1 / -1; margin-bottom: 30px; }
