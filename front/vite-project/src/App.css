@@ -534,7 +534,7 @@ footer { border-top: 1px solid rgba(33, 25, 42, 0.35); display: flex; font-famil
 .music-block .music-copy .intro { color: rgba(248, 236, 250, 0.76); max-width: 380px; }
 
 /* ===== Bloque 5: pie de página ===== */
-.site-footer { align-items: center; background: var(--paper); border-top: 1px solid rgba(33, 25, 42, 0.35); display: flex; flex-wrap: wrap; font-family: 'DM Mono', monospace; font-size: 0.65rem; gap: 20px 36px; justify-content: space-between; letter-spacing: 0.08em; min-height: 140px; padding: 28px clamp(20px, 5vw, 72px); text-transform: uppercase; }
+.site-footer { color: white; align-items: center; background: black; border-top: 1px solid rgba(33, 25, 42, 0.35); display: flex; flex-wrap: wrap; font-family: 'DM Mono', monospace; font-size: 0.65rem; gap: 20px 36px; justify-content: space-between; letter-spacing: 0.08em; min-height: 140px; padding: 28px clamp(20px, 5vw, 72px); text-transform: uppercase; }
 .footer-brand { font-weight: 500; }
 .footer-socials { align-items: flex-start; display: flex; flex-direction: column; gap: 8px; }
 .footer-socials-pending { color: rgba(33, 25, 42, 0.6); font-size: 0.58rem; }
