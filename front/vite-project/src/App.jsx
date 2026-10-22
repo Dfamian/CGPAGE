@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import wallpaper from './assets/walpaper jpg.jpg'
-import lettersLogo from './assets/Letrass.PNG'
 import cgSamoLogo from './assets/Ilustraciones/CGSAMO-header.png'
-import titleArtwork from './assets/Ilustraciones/samoooooo.png'
+import homelessRappersLogo from './assets/Homles and rapers.svg'
+import homelessRappersCover from './assets/Portada album.PNG'
 import './App.css'
 
 const assetFiles = import.meta.glob('./assets/accesorios samo/**/*.svg', { eager: true, import: 'default', query: '?url' })
@@ -63,7 +63,7 @@ function App() {
   }, [carouselPaused, reduceMotion])
 
   return <main style={{ '--wallpaper': `url("${wallpaper}")` }}>
-    <header className="site-header"><div className="header-left"><a className="brand brand-image" href="#inicio"><img src={cgSamoLogo} alt="CG SAMO" /></a><nav><a href="#inicio">Inicio</a><a href="#obra">Obra</a><a href="#contacto">Contacto</a></nav></div><a className="header-logo" href="#inicio"><img src={lettersLogo} alt="CG SAMO" /></a><a className="menu-link" href="#contacto" aria-label="Abrir contacto"><span></span><span></span><span></span></a></header>
+    <header className="site-header"><div className="header-left"><nav><a href="#inicio">Inicio</a><a href="#obra">Obra</a><a href="#contacto">Contacto</a></nav></div><a className="header-logo" href="#inicio"><img src={cgSamoLogo} alt="CG SAMO" /></a><a className="menu-link" href="#contacto" aria-label="Abrir contacto"><span></span><span></span><span></span></a></header>
     <section className="gallery-block" id="inicio" aria-label="Carrusel de imágenes del artista">
       <p className="eyebrow">CG SAMO / Galería</p>
       <div className="gallery-carousel" role="region" aria-roledescription="carrusel" aria-label="Galería de imágenes"
@@ -82,18 +82,33 @@ function App() {
       <p className="gallery-count">{currentImage ? `${activeImage + 1} / ${carouselImages.length}` : 'Galería pendiente'}</p>
     </section>
     <BuilderBlock />
-    <section className="title-block" id="titulo-homles" aria-label="HOMLES AND RAPERS">
-      <img className="title-art" src={titleArtwork} alt="HOMLES AND RAPERS" />
+    <section className="project-block" id="titulo-homles" aria-labelledby="music-title">
+      <div className="project-copy">
+        <a className="project-listen-link" href="https://ffm.to/homeless-rappers" target="_blank" rel="noopener noreferrer" aria-label="Escuchar Homeless & Rappers en FFM.to">
+          <img className="project-logo" src={homelessRappersLogo} alt="Homeless & Rappers" />
+          <span>Escuchar el mixtape <span aria-hidden="true">↗</span></span>
+        </a>
+        <div className="project-description">
+          <p>Homeless &amp; Rappers es mi primer proyecto de larga duración, un mixtape que busca reflejar lo que siento por el rap, su infinita diversidad y su verdadero sentido. Este viaje tiene un punto de partida, pero ningún lugar seguro ni un hogar definitivo; nos recuerda que en el género nunca debemos dejar de explorar. A menudo sentimos que no pertenecemos a ninguna parte, y precisamente de eso se trata: no hay por qué pertenecer.</p>
+        </div>
+      </div>
+      <img className="project-cover" src={homelessRappersCover} alt="Portada del álbum Homeless & Rappers" />
     </section>
     <section className="music-block" id="musica">
       <p className="eyebrow">04 / El sonido</p>
       <div className="music-copy">
-        <h2>La música<br /><em>de CG SAMO.</em></h2>
-        <p className="intro">Este espacio presentará el sonido del artista, sus influencias y las historias detrás de sus canciones.</p>
+        <h2>Descubre la música<br /><em>de CG SAMO.</em></h2>
       </div>
       <span className="music-note" aria-hidden="true">♪</span>
     </section>
-    <footer className="site-footer" id="contacto"><span>CG SAMO — HOMLES AND RAPERS</span><span>Redes / Contacto</span></footer>
+    <footer className="site-footer" id="contacto">
+      <span className="footer-brand">CG SAMO — HOMELESS &amp; RAPPERS</span>
+      <div className="footer-socials" aria-label="Redes sociales">
+        <span>Redes sociales</span>
+        <span className="footer-socials-pending">Enlaces próximamente</span>
+      </div>
+      <span className="footer-credit">Creado por <strong>Snow</strong></span>
+    </footer>
   </main>
 }
 
@@ -222,13 +237,13 @@ function BuilderBlock() {
     link.click()
   }
   return <section className="builder-block block-dark" id="obra">
-    <div className="builder-intro"><p className="eyebrow">Cabezamos / Estudio interactivo</p><h2>Haz tu<br /><em>cabezamo.</em></h2><p className="intro">Elige una silueta, mezcla accesorios y arrastra cada pieza hasta encontrar tu personaje.</p><div className="builder-action-panel"><label className="name-control" htmlFor="cabezamo-name"><span>Nombre del cabezamo</span><input id="cabezamo-name" type="text" value={cabezamoName} maxLength="32" onChange={(event) => setCabezamoName(event.target.value)} /></label><label className="name-toggle"><input type="checkbox" checked={includeName} onChange={(event) => setIncludeName(event.target.checked)} /><span>Incluir nombre al descargar</span></label><div className="builder-actions"><button className="outline-button builder-action" type="button" onClick={randomize}>Mezcla libre <span>✦</span></button><button className="text-action" type="button" onClick={() => setLayers({})}>Limpiar composición <span>↺</span></button><button className="text-action download-action" type="button" onClick={downloadComposition}>Descargar cabezamo <span>↓</span></button></div></div><span className="builder-count">{Object.keys(layers).length} piezas activas</span></div>
+    <div className="builder-intro"><p className="eyebrow">Cabezamos / Estudio interactivo</p><h2>CREA TU<br /><em>CABEZAMO!</em></h2><p className="intro">Los cabezazos fueron creados en un inicio exclusivamente para los creativos y artistas que aportaron significativamente al disco, pero ahora tu también puedes ser parte, crea tu cabezamo aquí!.</p><div className="builder-action-panel"><label className="name-control" htmlFor="cabezamo-name"><span>Nombre del cabezamo</span><input id="cabezamo-name" type="text" value={cabezamoName} maxLength="32" onChange={(event) => setCabezamoName(event.target.value)} /></label><label className="name-toggle"><input type="checkbox" checked={includeName} onChange={(event) => setIncludeName(event.target.checked)} /><span>Incluir nombre al descargar</span></label><div className="builder-actions"><button className="outline-button builder-action" type="button" onClick={randomize}>Mezcla libre <span>✦</span></button><button className="text-action" type="button" onClick={() => setLayers({})}>Limpiar composición <span>↺</span></button><button className="text-action download-action" type="button" onClick={downloadComposition}>Descargar cabezamo <span>↓</span></button></div></div><span className="builder-count">{Object.keys(layers).length} piezas activas</span></div>
     <div className="builder-workspace"><div className="builder-stage" ref={stageRef} aria-label="Composición interactiva" style={{ background: stageGradient }}>{frameAsset && <img className="builder-frame" src={frameAsset.url} alt="" aria-hidden="true" />}{Object.values(layers).map((layer) => {
       const layerSize = layer.category === 'siluetas' ? silhouetteSize : layer.width
       return layer.category === 'siluetas'
         ? <div className={`builder-layer builder-silhouette-gradient ${dragging === layer.category ? 'is-dragging' : ''}`} key={layer.category} role="img" aria-label="Silueta seleccionada" style={{ left: `${layer.left}%`, top: `${layer.top}%`, width: `${layerSize}%`, height: `${layerSize}%`, zIndex: layer.zIndex, transform: `translate(-50%, -50%) rotate(${layer.rotate}deg)`, background: silhouetteGradient, WebkitMaskImage: `url("${layer.url}")`, maskImage: `url("${layer.url}")` }} onPointerDown={(event) => { event.preventDefault(); setActiveCategory(layer.category); setDragging(null) }} />
         : <img className={`builder-layer ${dragging === layer.category ? 'is-dragging' : ''}`} key={layer.category} src={layer.url} alt={`${categoryLabels[layer.category]} seleccionados`} style={{ left: `${layer.left}%`, top: `${layer.top}%`, width: `${layerSize}%`, zIndex: layer.zIndex, transform: `translate(-50%, -50%) rotate(${layer.rotate}deg)` }} onPointerDown={(event) => { event.preventDefault(); setActiveCategory(layer.category); setDragging(fixedCategories.has(layer.category) ? null : layer.category) }} />
-    })}<span className="stage-label">arrastra / combina</span></div>
+    })}<span className="stage-label">ARRASTRA / COMBINA</span></div>
       <div className="builder-controls">
         <div className="control-section">
           <div className="control-heading"><span>01</span><strong>Escala la pieza activa</strong></div>

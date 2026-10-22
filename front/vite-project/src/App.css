@@ -40,7 +40,7 @@ main {
   /* Colores principales: cambia estos valores para modificar toda la identidad visual. */
   --ink: #21192a;
   --paper: #f8ecfa;
-  --acid: #e8ff78;
+  --acid: #f3deff;
   --pink: #e8a5f0;
   /* 100svh tiene en cuenta la altura real disponible en navegadores móviles. */
   min-height: 100svh;
@@ -64,8 +64,8 @@ main {
 .site-header {
   align-items: center;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 150px minmax(0, 1fr);
-  background: rgba(231, 108, 253, 0.163);
+  grid-template-columns: minmax(0, 1fr) 165px minmax(0, 1fr);
+  background: rgba(231, 108, 253, 0.155);
   backdrop-filter: blur(12px);
   height: var(--header-height);
   left: 0;
@@ -74,17 +74,18 @@ main {
   right: 0;
   top: 0;
   z-index: 20;
+  margin: 5px;
+  border-radius: 12px; 
 }
-/* Agrupa el nombre del estudio y los enlaces del lado izquierdo. */
+.site-header:hover{
+  background: rgba(231, 108, 253, 0.618);
+  transition: background 0.5s ease-in-out;
+  
+}
+/* Agrupa los enlaces de navegación del lado izquierdo. */
 .header-left { align-items: center; display: flex; gap: clamp(12px, 2vw, 24px); min-width: 0; }
-/* La marca y los enlaces usan el color oscuro del tema claro. */
-.brand, .site-header a { color: var(--ink); }
-/* Identidad del artista: mayúsculas, peso fuerte y separación entre letras. */
-.brand { font-size: 1.25rem; font-weight: 800; letter-spacing: 0.12em; text-decoration: none; white-space: nowrap; }
-/* El punto de la marca funciona como acento de color. */
-.brand span { color: #fe1500; }
-.brand-image { display: block; flex: 0 0 auto; height: 52px; width: 126px; }
-.brand-image img { display: block; height: 100%; object-fit: contain; width: 100%; }
+/* Los enlaces usan el color oscuro del tema claro. */
+.site-header a { color: var(--ink); }
 /* Espaciado flexible entre los enlaces del menú. */
 .site-header nav { display: flex; gap: clamp(12px, 2vw, 24px); min-width: 0; }
 .site-header nav a { font-size: 0.78rem; letter-spacing: 0.1em; text-decoration: none; text-transform: uppercase; font-weight: 700; white-space: nowrap; transition: color 240ms ease, transform 240ms cubic-bezier(0.2, 0.75, 0.25, 1); }
@@ -95,7 +96,6 @@ main {
   display: block;
   justify-self: center;
   line-height: 0;
-  width: 100%;
 }
 .header-logo img {
   display: block;
@@ -119,14 +119,7 @@ main {
 .menu-link:hover span,
 .menu-link:focus-visible span { background: #ad59bc; }
 
-@media (max-width: 1050px) and (min-width: 701px) {
-  .brand:not(.brand-image) { display: none; }
-  .brand-image { height: 46px; width: 108px; }
-  .header-left { gap: 0; }
-}
-
 @media (max-width: 800px) and (min-width: 701px) {
-  .brand-image { width: 70px; }
   .site-header nav { gap: 8px; }
   .site-header nav a { font-size: 0.64rem; letter-spacing: 0.07em; }
 }
@@ -189,7 +182,7 @@ h1 em, h2 em { color: #ad59bc; font-style: normal; }
 .block-dark .side-note { color: var(--acid); }
 
 /* ===== Editor interactivo del bloque 2 ===== */
-.builder-block { align-items: center; display: flex; flex-direction: row-reverse; gap: clamp(28px, 4vw, 58px); grid-template-columns: minmax(180px, 0.26fr) minmax(0, 1.74fr); min-height: auto; padding-bottom: 62px; padding-top: 94px; padding-left: 30px; padding-right: 30px; }
+.builder-block {     border-radius: 10px; margin: 10px;align-items: center; display: flex; flex-direction: row-reverse; gap: clamp(28px, 4vw, 58px); grid-template-columns: minmax(180px, 0.26fr) minmax(0, 1.74fr); min-height: auto; padding-bottom: 62px; padding-top: 94px; padding-left: 30px; padding-right: 30px; }
 .builder-intro {  padding-top: 8px; }
 .builder-intro h2 { font-size: clamp(3.4rem, 6vw, 6.7rem); }
 .builder-intro .intro { color: rgba(248, 236, 250, 0.76); }
@@ -292,15 +285,10 @@ footer { border-top: 1px solid rgba(33, 25, 42, 0.35); display: flex; font-famil
   }
 
   .site-header {
-    grid-template-columns: minmax(0, 1fr) 100px minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) 110px minmax(0, 1fr);
     padding: 0 16px;
   }
   .header-logo img { max-height: 52px; }
-
-  .brand:not(.brand-image) {
-    display: none;
-  }
-  .brand-image { height: 42px; width: 72px; }
 
   /* Se ocultan los enlaces pequeños y se conserva el botón de menú. */
   .site-header nav { display: none; }
@@ -523,31 +511,39 @@ footer { border-top: 1px solid rgba(33, 25, 42, 0.35); display: flex; font-famil
   .gallery-photo { animation: none; }
 }
 
-/* ===== Bloque 3: arte a pantalla completa, con sombra sobre la transparencia del PNG ===== */
-.title-block { align-items: center; display: flex; justify-content: center; min-height: 100svh; overflow: clip; padding: calc(var(--header-height) + 20px) clamp(16px, 4vw, 52px) 20px; position: relative; }
-.title-art { display: block; filter: drop-shadow(0 0 0 rgba(232, 165, 240, 0)); height: auto; max-height: calc(100svh - var(--header-height) - 40px); object-fit: contain; transition: filter 360ms ease, transform 360ms cubic-bezier(0.2, 0.75, 0.25, 1); width: min(96%, 1650px); }
-.title-art:hover,
-.title-art:focus-visible { filter: drop-shadow(0 0 7px rgba(232, 165, 240, 0.9)) drop-shadow(0 0 20px rgba(232, 255, 120, 0.72)); transform: scale(1.018); }
-
-@media (prefers-reduced-motion: reduce) {
-  .title-art { transition: none; }
-}
-
-/* ===== Bloque 4: maqueta provisional para presentar la música ===== */
-.music-block { align-items: center; background: var(--ink); color: var(--paper); display: grid; grid-template-columns: minmax(0, 1fr) minmax(180px, 0.55fr); min-height: 100svh; overflow: clip; padding: 120px clamp(24px, 12vw, 170px) 78px; position: relative; }
-.music-block > .eyebrow { align-self: start; color: var(--acid); grid-column: 1 / -1; margin-bottom: 30px; }
-.music-copy { max-width: 650px; position: relative; z-index: 1; }
-.music-copy h2 { font-size: clamp(3.2rem, 8vw, 8rem); }
-.music-copy h2 em { color: var(--acid); }
-.music-copy .intro { color: rgba(248, 236, 250, 0.76); max-width: 380px; }
+/* ===== Bloque 3: presentación del proyecto musical ===== */
+.project-block {    border-radius: 10px; margin: 10px;background-color: var(--ink); align-items: center; color: var(--paper); display: grid; gap: clamp(36px, 7vw, 100px); grid-template-columns: minmax(0, 1fr) minmax(280px, 0.8fr); min-height: 100svh; padding: calc(var(--header-height) + 54px) clamp(24px, 9vw, 132px) 78px; }
+.project-copy { max-width: 720px; }
+.project-listen-link { align-items: center; border-radius: 12px; color: var(--paper); display: flex; flex-direction: column; gap: 12px; margin: 0 auto clamp(34px, 6vh, 54px); max-width: 100%; outline-offset: 8px; text-align: center; text-decoration: none; width: 275px; }
+.project-logo { display: block; height: auto; max-width: 100%; object-fit: contain; transition: filter 260ms ease, transform 260ms cubic-bezier(0.2, 0.75, 0.25, 1); width: 100%; }
+.project-listen-link > span { color: var(--acid); font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; transition: color 260ms ease, letter-spacing 260ms ease; }
+.project-listen-link:hover .project-logo,
+.project-listen-link:focus-visible .project-logo { filter: drop-shadow(0 0 9px rgba(255, 105, 180, 0.95)) drop-shadow(0 0 24px rgba(255, 105, 180, 0.65)); transform: scale(1.08); }
+.project-listen-link:hover > span,
+.project-listen-link:focus-visible > span { color: #ff9bd2; letter-spacing: 0.16em; }
+.project-description h2 { font-size: clamp(2.25rem, 4vw, 3.8rem); line-height: 1.05; }
+.project-description h3 { color: var(--acid); font-size: clamp(1.65rem, 3.2vw, 2.6rem); letter-spacing: -0.035em; line-height: 1.12; margin: 10px 0 0; }
+.project-description p { color: rgba(248, 236, 250, 0.86); font-size: clamp(0.95rem, 1.1vw, 1.05rem); line-height: 1.75; margin: 22px 0 0; max-width: 60ch; text-wrap: pretty; }
+.project-cover { aspect-ratio: 1; display: block; justify-self: end; max-height: min(68svh, 690px); object-fit: contain; width: min(100%, 600px); }
 .music-note { color: rgba(232, 255, 120, 0.8); font-size: clamp(12rem, 32vw, 32rem); font-weight: 700; justify-self: center; line-height: 0.7; transform: rotate(10deg); }
 
+/* ===== Bloque 4: presentación general de la música ===== */
+.music-block { align-items: center; color: var(--paper); display: grid; grid-template-columns: minmax(0, 1fr) minmax(180px, 0.55fr); min-height: 100svh; overflow: clip; padding: 120px clamp(24px, 12vw, 170px) 78px; position: relative; }
+.music-block > .eyebrow { align-self: start; color: var(--acid); grid-column: 1 / -1; margin-bottom: 30px; }
+.music-block .music-copy h2 { font-size: clamp(2.6rem, 5.4vw, 5.5rem); line-height: 1; }
+.music-block .music-copy .intro { color: rgba(248, 236, 250, 0.76); max-width: 380px; }
+
 /* ===== Bloque 5: pie de página ===== */
-.site-footer { align-items: center; background: var(--paper); border-top: 1px solid rgba(33, 25, 42, 0.35); display: flex; font-family: 'DM Mono', monospace; font-size: 0.65rem; justify-content: space-between; letter-spacing: 0.08em; min-height: 140px; padding: 28px clamp(20px, 5vw, 72px); text-transform: uppercase; }
+.site-footer { align-items: center; background: var(--paper); border-top: 1px solid rgba(33, 25, 42, 0.35); display: flex; flex-wrap: wrap; font-family: 'DM Mono', monospace; font-size: 0.65rem; gap: 20px 36px; justify-content: space-between; letter-spacing: 0.08em; min-height: 140px; padding: 28px clamp(20px, 5vw, 72px); text-transform: uppercase; }
+.footer-brand { font-weight: 500; }
+.footer-socials { align-items: flex-start; display: flex; flex-direction: column; gap: 8px; }
+.footer-socials-pending { color: rgba(33, 25, 42, 0.6); font-size: 0.58rem; }
+.footer-credit { white-space: nowrap; }
+.footer-credit strong { color: #ad59bc; font-weight: 700; }
 
 .gallery-block,
 .builder-block,
-.title-block,
+.project-block,
 .music-block,
 .site-footer {
   scroll-snap-align: start;
@@ -560,12 +556,23 @@ footer { border-top: 1px solid rgba(33, 25, 42, 0.35); display: flex; font-famil
   .gallery-arrow { height: 34px; width: 34px; }
   .gallery-empty { padding: 12px; }
   .gallery-empty span:last-child { font-size: 0.58rem; }
-  .music-block { align-content: center; display: flex; flex-direction: column; gap: 24px; min-height: 100svh; padding: 110px 22px 76px; }
-  .music-block > .eyebrow { align-self: flex-start; margin-bottom: 8px; }
+  .project-block,
+  .music-block { align-content: center; display: flex; flex-direction: column; gap: 32px; min-height: 100svh; padding: 96px 22px 64px; }
+  .project-copy { width: 100%; }
+  .project-listen-link { margin-bottom: 32px; width: min(275px, 100%); }
+  .project-description h2 { font-size: clamp(2.2rem, 9vw, 3.2rem); }
+  .project-description h3 { font-size: clamp(1.55rem, 7vw, 2.2rem); }
+  .project-description p { font-size: 0.96rem; line-height: 1.7; margin-top: 18px; }
+  .project-cover { align-self: center; justify-self: center; max-height: none; width: min(100%, 440px); }
   .music-copy { width: 100%; }
-  .music-copy h2 { font-size: 3.25rem; }
-  .music-note { font-size: 9rem; }
-  .site-footer { align-items: flex-start; }
+  .music-block .music-copy h2 { font-size: clamp(2.6rem, 11vw, 3.6rem); }
+  .music-block .music-note { font-size: 9rem; }
+  .site-footer { align-items: flex-start; flex-direction: column; gap: 20px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-listen-link *,
+  .project-listen-link > span { transition: none; }
 }
 
 /* En teléfonos muy estrechos se reduce solo el título para que sus palabras
