@@ -22,6 +22,10 @@ html {
   :root {
     --header-height: 60px;
   }
+
+  html {
+    scroll-snap-type: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

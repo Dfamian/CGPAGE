@@ -4,7 +4,6 @@ import cgSamoLogo from './assets/Ilustraciones/CGSAMO-header.png'
 import homelessRappersLogo from './assets/Homles and rapers.svg'
 import homelessRappersCover from './assets/Portada album.PNG'
 import './App.css'
-
 const assetFiles = import.meta.glob('./assets/accesorios samo/**/*.svg', { eager: true, import: 'default', query: '?url' })
 const categoryLabels = { siluetas: 'Siluetas', 'ojos sin pestañas': 'Ojos', 'ojos con pestañas': 'Ojos con pestañas', gafas: 'Gafas', aretes: 'Aretes', Balacas: 'Balacas', Gorras: 'Gorras', Headsets: 'Headsets', mas: 'Más', exclamaciones: 'Exclamaciones' }
 const categoryOrder = Object.keys(categoryLabels)
@@ -141,7 +140,11 @@ function App() {
         <p className="music-overline">Rap · exploración · libertad</p>
         <h2 id="music-title">Descubre la música <em>de CG SAMO.</em></h2>
         <p className="music-description">Un viaje por el rap y sus infinitas formas, sin etiquetas ni un lugar definitivo al que pertenecer.</p>
-        <a className="music-link" href="#titulo-homles">Conoce Homeless &amp; Rappers <span aria-hidden="true">↗</span></a>
+        <a className="music-link" href="#titulo-homles" onClick={(event) => {
+          event.preventDefault()
+          document.getElementById('titulo-homles')?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
+          window.history.replaceState(null, '', '#titulo-homles')
+        }}>Conoce Homeless &amp; Rappers <span aria-hidden="true">↗</span></a>
       </div>
       <div className="music-project">
         <span>Proyecto destacado</span>
@@ -159,7 +162,6 @@ function App() {
     </footer>
   </main>
 }
-
 function BuilderBlock() {
   const stageRef = useRef(null)
   const [activeCategory, setActiveCategory] = useState(categoryOrder[0])
@@ -303,6 +305,19 @@ function BuilderBlock() {
       setShareMessage('Enlace copiado. Pégalo en el texto de tu publicación de Instagram.')
       return true
     } catch (error) {
+      const fallback = document.createElement('textarea')
+      fallback.value = caption
+      fallback.setAttribute('readonly', '')
+      fallback.style.position = 'fixed'
+      fallback.style.opacity = '0'
+      document.body.append(fallback)
+      fallback.select()
+      const copied = document.execCommand('copy')
+      fallback.remove()
+      if (copied) {
+        setShareMessage('Enlace copiado. Pégalo en el texto de tu publicación de Instagram.')
+        return true
+      }
       setShareMessage(`No se pudo copiar el enlace: ${error.message}`)
       return false
     }
@@ -338,16 +353,31 @@ function BuilderBlock() {
         setShareMessage('Compartir cancelado.')
         return
       }
-      setShareMessage(`No se pudo compartir la composición: ${error.message}`)
+      setShareMessage(`No se pudo compartir directamente (${error.message}). Se descargará la composición como alternativa.`)
+      try {
+        const composition = await createCompositionCanvas()
+        if (!composition) return
+        const link = document.createElement('a')
+        link.download = `${composition.safeName}.png`
+        link.href = composition.canvas.toDataURL('image/png')
+        link.click()
+        setShareMessage('Composición descargada. Puedes adjuntarla manualmente para compartirla.')
+      } catch (fallbackError) {
+        setShareMessage(`No se pudo compartir ni descargar la composición: ${fallbackError.message}`)
+      }
     }
   }
   return <section className="builder-block block-dark" id="obra">
-    <div className="builder-intro"><p className="eyebrow">Cabezamos / Estudio interactivo</p><h2>CREA TU<br /><em>CABEZAMO!</em></h2><p className="intro">Los cabezazos fueron creados en un inicio exclusivamente para los creativos y artistas que aportaron significativamente al disco, pero ahora tu también puedes ser parte, crea tu cabezamo aquí!.</p><div className="builder-action-panel"><label className="name-control" htmlFor="cabezamo-name"><span>Nombre del cabezamo</span><input id="cabezamo-name" type="text" value={cabezamoName} maxLength="32" onChange={(event) => setCabezamoName(event.target.value)} /></label><label className="name-toggle"><input type="checkbox" checked={includeName} onChange={(event) => setIncludeName(event.target.checked)} /><span>Incluir nombre al descargar</span></label><div className="builder-actions"><button className="outline-button builder-action" type="button" onClick={randomize}>Mezcla libre <span>✦</span></button><button className="text-action" type="button" onClick={() => setLayers({})}>Limpiar composición <span>↺</span></button><button className="text-action download-action" type="button" onClick={downloadComposition}>Descargar cabezamo <span>↓</span></button><button className="text-action share-action" type="button" onClick={shareComposition}>Compartir CABEZAMO <span>↗</span></button><button className="text-action share-action" type="button" onClick={copyMusicCaption}>Ayudanos a compartir , te lo agradeceria mucho lind@" <span>⧉</span></button></div>{shareMessage && <p className="share-message" role="status">{shareMessage}</p>}</div><span className="builder-count">{Object.keys(layers).length} piezas activas</span></div>
+    <div className="builder-intro">
+      <p className="eyebrow">Cabezamos / Estudio interactivo</p>
+      <h2>CREA TU<br /><em>CABEZAMO!</em></h2>
+      <p className="intro">Los cabezazos fueron creados en un inicio exclusivamente para los creativos y artistas que aportaron significativamente al disco, pero ahora tu también puedes ser parte, crea tu cabezamo aquí!.</p>
+    </div>
     <div className="builder-workspace"><div className="builder-stage" ref={stageRef} aria-label="Composición interactiva" style={{ background: stageGradient }}>{frameAsset && <img className="builder-frame" src={frameAsset.url} alt="" aria-hidden="true" />}{Object.values(layers).map((layer) => {
       const layerSize = layer.category === 'siluetas' ? silhouetteSize : layer.width
       return layer.category === 'siluetas'
         ? <div className={`builder-layer builder-silhouette-gradient ${dragging === layer.category ? 'is-dragging' : ''}`} key={layer.category} role="img" aria-label="Silueta seleccionada" style={{ left: `${layer.left}%`, top: `${layer.top}%`, width: `${layerSize}%`, height: `${layerSize}%`, zIndex: layer.zIndex, transform: `translate(-50%, -50%) rotate(${layer.rotate}deg)`, background: silhouetteGradient, WebkitMaskImage: `url("${layer.url}")`, maskImage: `url("${layer.url}")` }} onPointerDown={(event) => { event.preventDefault(); setActiveCategory(layer.category); setDragging(null) }} />
-        : <img className={`builder-layer ${dragging === layer.category ? 'is-dragging' : ''}`} key={layer.category} src={layer.url} alt={`${categoryLabels[layer.category]} seleccionados`} style={{ left: `${layer.left}%`, top: `${layer.top}%`, width: `${layerSize}%`, zIndex: layer.zIndex, transform: `translate(-50%, -50%) rotate(${layer.rotate}deg)` }} onPointerDown={(event) => { event.preventDefault(); setActiveCategory(layer.category); setDragging(fixedCategories.has(layer.category) ? null : layer.category) }} />
+        : <img className={`builder-layer is-draggable ${dragging === layer.category ? 'is-dragging' : ''}`} key={layer.category} src={layer.url} alt={`${categoryLabels[layer.category]} seleccionados`} style={{ left: `${layer.left}%`, top: `${layer.top}%`, width: `${layerSize}%`, zIndex: layer.zIndex, transform: `translate(-50%, -50%) rotate(${layer.rotate}deg)` }} onPointerDown={(event) => { event.preventDefault(); setActiveCategory(layer.category); setDragging(fixedCategories.has(layer.category) ? null : layer.category) }} />
     })}<span className="stage-label">ARRASTRA / COMBINA</span></div>
       <div className="builder-controls">
         <div className="control-section">
@@ -368,14 +398,14 @@ function BuilderBlock() {
         {activeCategory === 'siluetas' && <div className="control-section color-controls">
           <div className="control-heading"><span>02</span><strong>Degradado de silueta</strong></div>
           <div className="color-pickers">
-            <label>Inicio <input type="color" value={silhouetteColors[0]} onChange={(event) => setSilhouetteColors(([current, end]) => [event.target.value, end])} /></label>
+            <label>Inicio <input type="color" value={silhouetteColors[0]} onChange={(event) => setSilhouetteColors(([, end]) => [event.target.value, end])} /></label>
             <label>Final <input type="color" value={silhouetteColors[1]} onChange={(event) => setSilhouetteColors(([start]) => [start, event.target.value])} /></label>
           </div>
         </div>}
         <div className="control-section color-controls">
           <div className="control-heading"><span>{activeCategory === 'siluetas' ? '03' : '02'}</span><strong>Fondo del lienzo</strong></div>
           <div className="color-pickers">
-            <label>Inicio <input type="color" value={stageColors[0]} onChange={(event) => setStageColors(([current, end]) => [event.target.value, end])} /></label>
+            <label>Inicio <input type="color" value={stageColors[0]} onChange={(event) => setStageColors(([, end]) => [event.target.value, end])} /></label>
             <label>Final <input type="color" value={stageColors[1]} onChange={(event) => setStageColors(([start]) => [start, event.target.value])} /></label>
           </div>
         </div>
@@ -393,8 +423,20 @@ function BuilderBlock() {
         </div>
       </div>
     </div>
+    <div className="builder-action-panel">
+      <label className="name-control" htmlFor="cabezamo-name"><span>Nombre del cabezamo</span><input id="cabezamo-name" type="text" value={cabezamoName} maxLength="32" onChange={(event) => setCabezamoName(event.target.value)} /></label>
+      <label className="name-toggle"><input type="checkbox" checked={includeName} onChange={(event) => setIncludeName(event.target.checked)} /><span>Incluir nombre al descargar</span></label>
+      <div className="builder-actions">
+        <button className="outline-button builder-action" type="button" onClick={randomize}>Mezcla libre <span>✦</span></button>
+        <button className="text-action" type="button" onClick={() => setLayers({})}>Limpiar composición <span>↺</span></button>
+        <button className="text-action download-action" type="button" onClick={downloadComposition}>Descargar cabezamo <span>↓</span></button>
+        <button className="text-action share-action" type="button" onClick={shareComposition}>Compartir CABEZAMO <span>↗</span></button>
+        <button className="text-action share-action" type="button" onClick={copyMusicCaption}>Ayudanos a compartir , te lo agradeceria mucho lind@" <span>⧉</span></button>
+      </div>
+      {shareMessage && <p className="share-message" role="status">{shareMessage}</p>}
+    </div>
+    <span className="builder-count">{Object.keys(layers).length} piezas activas</span>
       <span className="side-note">02 / laboratorio visual</span>
   </section>
 }
-
 export default App

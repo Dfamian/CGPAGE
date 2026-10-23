@@ -181,14 +181,14 @@ h1 em, h2 em { color: #ad59bc; font-style: normal; }
 .block-dark .side-note { color: var(--acid); }
 
 /* ===== Editor interactivo del bloque 2 ===== */
-.builder-block {     border-radius: 10px; margin: 10px;align-items: center; display: flex; flex-direction: row-reverse; gap: clamp(28px, 4vw, 58px); grid-template-columns: minmax(180px, 0.26fr) minmax(0, 1.74fr); min-height: auto; padding-bottom: 62px; padding-top: 94px; padding-left: 30px; padding-right: 30px; }
-.builder-intro {  padding-top: 8px; }
+.builder-block { border-radius: 10px; margin: 10px; align-items: center; display: grid; gap: 24px clamp(28px, 4vw, 58px); grid-template-areas: "workspace intro" "workspace actions" "workspace count"; grid-template-columns: minmax(0, 1.7fr) minmax(230px, 0.8fr); grid-template-rows: auto 1fr auto; min-height: auto; padding: 94px 30px 62px; }
+.builder-intro { grid-area: intro; padding-top: 8px; }
 .builder-intro h2 { font-size: clamp(3.4rem, 6vw, 6.7rem); }
 .builder-intro .intro { color: rgba(248, 236, 250, 0.76); }
 .name-control { color: rgba(248, 236, 250, 0.72); display: flex; flex-direction: column; font-family: 'DM Mono', monospace; font-size: 0.68rem; gap: 10px; letter-spacing: 0.06em; margin-top: 12px; text-transform: uppercase; }
 .name-control input { background: rgba(248, 236, 250, 0.08); border: 1px solid rgba(232, 255, 120, 0.58); color: var(--paper); font: inherit; letter-spacing: 0.03em; min-height: 48px; padding: 11px 12px; text-transform: none; width: 100%; }
 .name-control input:focus { border-color: var(--acid); outline: 2px solid rgba(232, 255, 120, 0.22); outline-offset: 2px; }
-.builder-action-panel { display: flex; flex-direction: column; gap: 14px; margin-top: auto; width: 100%; }
+.builder-action-panel { display: flex; flex-direction: column; gap: 14px; grid-area: actions; margin-top: 0; width: 100%; }
 .name-toggle { align-items: center; color: rgba(248, 236, 250, 0.72); display: flex; font-family: 'DM Mono', monospace; font-size: 0.62rem; gap: 9px; margin-top: 12px; text-transform: uppercase; }
 .name-toggle input { accent-color: var(--acid); height: 16px; width: 16px; }
 .builder-actions { align-items: stretch; display: flex; flex-direction: column; gap: 12px; margin-top: 0; }
@@ -200,9 +200,9 @@ h1 em, h2 em { color: #ad59bc; font-style: normal; }
 .text-action:hover, .text-action:focus-visible { background: var(--acid); color: var(--ink); outline: none; transform: translateY(-2px); }
 .text-action span { font-size: 1.1rem; margin-left: 8px; }
 .share-message { color: var(--acid); font-family: 'DM Mono', monospace; font-size: 0.62rem; line-height: 1.6; margin: 0; }
-.builder-count { color: rgba(248, 236, 250, 0.52); font-family: 'DM Mono', monospace; font-size: 0.59rem; letter-spacing: 0.08em; margin-top: 14px; text-transform: uppercase; }
-.builder-workspace { align-items: start; display: grid; gap: clamp(20px, 3vw, 36px); grid-template-columns: minmax(270px, 400px) minmax(320px, 1fr); min-width: 0; }
-.builder-stage { align-self: start; aspect-ratio: 1 / 1.08; background: #ffffff; border: 1px solid rgba(248, 236, 250, 0.25); box-shadow: 10px 10px 0 rgba(248, 236, 250, 0.13); min-height: 0; overflow: hidden; position: relative; touch-action: none; width: min(100%, 400px); border-radius: 30px; }
+.builder-count { color: rgba(248, 236, 250, 0.52); font-family: 'DM Mono', monospace; font-size: 0.59rem; grid-area: count; letter-spacing: 0.08em; margin-top: 0; text-transform: uppercase; }
+.builder-workspace { align-items: start; display: grid; grid-area: workspace; gap: clamp(20px, 3vw, 36px); grid-template-columns: minmax(270px, 400px) minmax(320px, 1fr); min-width: 0; }
+.builder-stage { align-self: start; aspect-ratio: 1 / 1.08; background: #ffffff; border: 1px solid rgba(248, 236, 250, 0.25); box-shadow: 10px 10px 0 rgba(248, 236, 250, 0.13); min-height: 0; overflow: hidden; position: relative; touch-action: pan-y; width: min(100%, 400px); border-radius: 30px; }
 .builder-stage::before { display: none; }
 .builder-frame { height: 100%; inset: 0; object-fit: contain; pointer-events: none; position: absolute; width: 100%; z-index: 0; }
 .builder-face { background: #f2b48a; border: 3px solid var(--ink); border-radius: 48% 48% 44% 44%; height: 70%; left: 50%; position: absolute; top: 52%; transform: translate(-50%, -50%); width: 65%; z-index: 1; }
@@ -214,6 +214,7 @@ h1 em, h2 em { color: #ad59bc; font-style: normal; }
 .builder-silhouette { height: auto; left: 50%; max-height: 86%; max-width: 90%; position: absolute; top: 50%; transform: translate(-50%, -50%); width: 82%; z-index: 1; }
 .builder-silhouette-gradient { background-repeat: no-repeat; background-size: 100% 100%; mask-position: center; mask-repeat: no-repeat; mask-size: contain; pointer-events: auto; }
 .builder-layer { cursor: grab; height: auto; max-width: none; pointer-events: auto; position: absolute; user-select: none; }
+.builder-layer.is-draggable { touch-action: none; }
 .builder-layer.is-dragging { cursor: grabbing; filter: drop-shadow(3px 4px 0 rgba(33, 25, 42, 0.28)); }
 .stage-label { bottom: 13px; color: rgba(33, 25, 42, 0.55); font-family: 'DM Mono', monospace; font-size: 0.55rem; left: 15px; letter-spacing: 0.08em; position: absolute; text-transform: uppercase; z-index: 10; }
 .builder-controls { min-width: 0; }
@@ -273,6 +274,8 @@ footer { border-top: 1px solid rgba(33, 25, 42, 0.35); display: flex; font-famil
 @media (max-width: 1100px) and (min-width: 701px) {
   .builder-block { display: flex; flex-direction: column; gap: 34px; }
   .builder-intro { max-width: 360px; }
+  .builder-action-panel { max-width: 360px; }
+  .builder-count { align-self: flex-start; }
   .builder-workspace { grid-template-columns: minmax(280px, 400px) minmax(0, 1fr); width: 100%; }
 }
 
@@ -416,7 +419,7 @@ footer { border-top: 1px solid rgba(33, 25, 42, 0.35); display: flex; font-famil
   /* Divide el escenario y los controles del editor. */
   .builder-workspace { display: grid; gap: 28px; grid-template-columns: minmax(280px, 0.9fr) minmax(340px, 1.1fr); min-width: 0; }
   /* Lienzo de composicion: todo accesorio se posiciona respecto a este elemento. */
-  .builder-stage { align-self: start; aspect-ratio: 1 / 1.08; background: #ffffff; border: 1px solid rgba(248, 236, 250, 0.25); box-shadow: 13px 13px 0 rgba(248, 236, 250, 0.13); min-height: 360px; overflow: hidden; position: relative; touch-action: none; }
+  .builder-stage { align-self: start; aspect-ratio: 1 / 1.08; background: #ffffff; border: 1px solid rgba(248, 236, 250, 0.25); box-shadow: 13px 13px 0 rgba(248, 236, 250, 0.13); min-height: 360px; overflow: hidden; position: relative; touch-action: pan-y; }
   /* Rejilla decorativa del lienzo. No recibe eventos para no bloquear el arrastre. */
   .builder-stage::before { display: none; }
   /* Silueta base: queda centrada y debajo de todos los accesorios. */
@@ -463,10 +466,11 @@ footer { border-top: 1px solid rgba(33, 25, 42, 0.35); display: flex; font-famil
   .accessory-choice { height: 66px; }
 
   /* Ajustes del editor para pantallas pequeñas: una columna y controles apilados. */
-  .builder-block { align-items: stretch; display: flex; gap: 36px; min-height: 0; padding-bottom: 78px; padding-top: 112px; }
+  .builder-block { align-items: stretch; display: grid; gap: 26px; grid-template-areas: "intro" "workspace" "actions" "count"; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto; min-height: 0; padding: 96px 16px 48px; }
   .builder-intro { max-width: 100%; }
   .builder-intro h2 { font-size: 3.25rem; }
-  .builder-count { margin-top: 5px; }
+  .builder-action-panel { gap: 12px; }
+  .builder-count { margin-top: 0; }
   .builder-workspace { display: flex; flex-direction: column; gap: 32px; }
   .builder-stage { align-self: center; min-height: 0; width: min(100%, 410px); }
   .builder-silhouette { max-height: 86%; max-width: 90%; width: 82%; }
@@ -638,14 +642,6 @@ footer { border-top: 1px solid rgba(33, 25, 42, 0.35); display: flex; font-famil
 /* En teléfonos muy estrechos se reduce solo el título para que sus palabras
    sigan cabiendo completas; el resto de la escala permanece igual. */
 @media (max-width: 370px) {
-
-    .builder-block {
-      display: flex;
-      gap: 36px;
-      min-height: 0;
-      padding-bottom: 78px;
-      padding-top: 112px;
-    }
 
     .builder-intro { max-width: 100%; }
     .builder-intro h2 { font-size: 3.25rem; }
