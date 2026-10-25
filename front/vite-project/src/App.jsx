@@ -169,7 +169,19 @@ function BuilderBlock() {
   const [includeName, setIncludeName] = useState(true)
   const [shareMessage, setShareMessage] = useState('')
   const [silhouetteColors, setSilhouetteColors] = useState(['#ff4d6d', '#ffd166'])
+  const [mobileBuilderPanel, setMobileBuilderPanel] = useState(null)
   const silhouetteScaleLocked = fixedCategories.has(activeCategory)
+  const activeCategoryAssets = catalog[activeCategory] ?? []
+  const mobileAccessoryCategory = activeCategory === 'siluetas' ? 'ojos sin pestañas' : activeCategory
+
+  useEffect(() => {
+    if (!mobileBuilderPanel) return undefined
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') setMobileBuilderPanel(null)
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [mobileBuilderPanel])
 
   useEffect(() => {
     const moveLayer = (event) => {
@@ -422,7 +434,34 @@ function BuilderBlock() {
         ? <div className={`builder-layer builder-silhouette-gradient ${dragging === layer.category ? 'is-dragging' : ''}`} key={layer.category} data-category={layer.category} role="img" aria-label="Silueta seleccionada" style={{ ...layerStyle, height: `${layerSize}%`, background: silhouetteGradient, WebkitMaskImage: `url("${layer.url}")`, maskImage: `url("${layer.url}")` }} onPointerDown={(event) => { event.preventDefault(); setDragging(null) }} />
         : <img className={`builder-layer is-draggable ${dragging === layer.category ? 'is-dragging' : ''}`} key={layer.category} data-category={layer.category} src={layer.url} alt={`${categoryLabels[layer.category]} seleccionados`} draggable="false" style={layerStyle} onDragStart={(event) => event.preventDefault()} onPointerDown={(event) => { event.preventDefault(); setDragging(fixedCategories.has(layer.category) ? null : layer.category) }} />
     })}</div>
-          <label className="scale-control" htmlFor="piece-scale">
+      <div className="mobile-builder-controls">
+        <div className="mobile-builder-tabs" aria-label="Controles de composición">
+          <button type="button" aria-expanded={mobileBuilderPanel === 'siluetas'} onClick={() => { setActiveCategory('siluetas'); setMobileBuilderPanel('siluetas') }}>Siluetas</button>
+          <button type="button" aria-expanded={mobileBuilderPanel === 'accesorios'} onClick={() => { if (activeCategory === 'siluetas') setActiveCategory('ojos sin pestañas'); setMobileBuilderPanel('accesorios') }}>Accesorios</button>
+        </div>
+        {mobileBuilderPanel && <>
+          <button className="mobile-builder-backdrop" type="button" aria-label="Cerrar panel de piezas" onClick={() => setMobileBuilderPanel(null)} />
+          <section className="mobile-builder-drawer" role="dialog" aria-modal="true" aria-label={mobileBuilderPanel === 'siluetas' ? 'Elegir silueta' : 'Elegir accesorios'}>
+            <div className="mobile-drawer-heading">
+              <div><span>{mobileBuilderPanel === 'siluetas' ? 'Base del cabezamo' : 'Personaliza tu cabezamo'}</span><strong>{mobileBuilderPanel === 'siluetas' ? 'Siluetas' : 'Accesorios'}</strong></div>
+              <button type="button" onClick={() => setMobileBuilderPanel(null)} aria-label="Cerrar panel">×</button>
+            </div>
+            {mobileBuilderPanel === 'accesorios' && <label className="mobile-drawer-category">
+              <span>Categoría</span>
+              <select value={mobileAccessoryCategory} onChange={(event) => setActiveCategory(event.target.value)}>
+                {categoryOrder.filter((category) => category !== 'siluetas').map((category) => <option key={category} value={category}>{categoryLabels[category]}</option>)}
+              </select>
+            </label>}
+            <div className="mobile-drawer-assets">
+              {(mobileBuilderPanel === 'siluetas' ? catalog.siluetas ?? [] : catalog[mobileAccessoryCategory] ?? []).map((item) => {
+                const category = mobileBuilderPanel === 'siluetas' ? 'siluetas' : mobileAccessoryCategory
+                return <button className={`mobile-drawer-choice ${layers[category]?.id === item.id ? 'is-selected' : ''}`} key={item.id} type="button" aria-label={`${categoryLabels[category]} ${item.name.replace(/\.svg$/i, '')}`} aria-pressed={layers[category]?.id === item.id} onClick={() => { setActiveCategory(category); chooseAccessory(item); setMobileBuilderPanel(null) }}><img src={item.url} alt="" /></button>
+              })}
+            </div>
+          </section>
+        </>}
+      </div>
+      <label className="scale-control" htmlFor="piece-scale">
             <span>Tamaño de {categoryLabels[activeCategory]}</span>
             <output>{silhouetteScaleLocked ? 'Fijo' : layers[activeCategory] ? `${Math.round(layers[activeCategory].width)}%` : '—'}</output>
             <input
@@ -448,7 +487,7 @@ function BuilderBlock() {
             {categoryOrder.map((category) => <button className={activeCategory === category ? 'is-active' : ''} key={category} type="button" aria-pressed={activeCategory === category} onClick={() => setActiveCategory(category)}>{categoryLabels[category]}</button>)}
           </div>
           <div className="asset-strip accessory-strip">
-            {(catalog[activeCategory] ?? []).map((item) => <button className={`asset-choice accessory-choice ${layers[activeCategory]?.id === item.id ? 'is-selected' : ''}`} key={item.id} type="button" aria-label={`${categoryLabels[activeCategory]} ${item.name.replace(/\.svg$/i, '')}`} aria-pressed={layers[activeCategory]?.id === item.id} onClick={() => chooseAccessory(item)}><img src={item.url} alt="" /></button>)}
+            {activeCategoryAssets.map((item) => <button className={`asset-choice accessory-choice ${layers[activeCategory]?.id === item.id ? 'is-selected' : ''}`} key={item.id} type="button" aria-label={`${categoryLabels[activeCategory]} ${item.name.replace(/\.svg$/i, '')}`} aria-pressed={layers[activeCategory]?.id === item.id} onClick={() => chooseAccessory(item)}><img src={item.url} alt="" /></button>)}
           </div>
         </div>
         <div className="control-section">

@@ -462,6 +462,7 @@ footer { border-top: 1px solid rgba(33, 25, 42, 0.35); display: flex; font-famil
   .category-tabs button:hover, .category-tabs button.is-active { background: var(--acid); border-color: var(--acid); color: var(--ink); }
   /* Miniaturas de accesorios, ligeramente mas altas que las flechas. */
   .accessory-choice { height: 66px; }
+  .mobile-builder-controls { display: none; }
 
   /* Ajustes del editor para pantallas pequeñas: una columna y controles apilados. */
   .builder-block { align-items: stretch; display: grid; gap: 26px; grid-template-areas: "intro" "workspace" "actions" "count"; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto; min-height: 0; padding: 96px 16px 48px; }
@@ -703,25 +704,41 @@ footer { border-top: 1px solid rgba(33, 25, 42, 0.35); display: flex; font-famil
 .remove-action { min-height: 44px; }
 
 @media (max-width: 700px) {
-  .builder-preview { align-self: center; width: 100%; }
-  .builder-workspace { grid-template-columns: minmax(0, 1fr); }
-  .builder-stage { width: 100%; }
+  .builder-preview { align-self: center; position: relative; width: 100%; }
+  .builder-workspace { display: grid; gap: 22px; grid-template-columns: minmax(0, 1fr); }
+  .builder-stage { min-height: 0; width: 100%; }
+  .builder-controls { display: none; }
   .drag-instruction { font-size: 0.7rem; margin-bottom: 10px; min-height: 44px; width: 100%; }
-  .control-section { padding: 18px 0 22px; }
-  .scale-control { gap: 6px 12px; }
   .builder-preview > .scale-control { margin-top: 14px; padding: 12px 14px 6px; }
-  .color-pickers { gap: 28px; }
-  .color-pickers input { height: 68px; width: 100px; }
+  .mobile-builder-controls { display: block; }
+  .mobile-builder-tabs { align-items: flex-end; display: flex; flex-direction: column; gap: 8px; position: absolute; right: 0; top: 50%; transform: translateY(-50%); z-index: 20; }
+  .mobile-builder-tabs button { background: var(--ink); border: 1px solid var(--acid); border-radius: 10px 0 0 10px; box-shadow: -4px 4px 0 rgba(33, 25, 42, 0.18); color: var(--acid); cursor: pointer; font: 600 0.68rem 'DM Mono', monospace; height: 92px; letter-spacing: 0.08em; padding: 10px 8px; text-transform: uppercase; transition: background-color 180ms ease, color 180ms ease, transform 180ms ease, box-shadow 180ms ease; writing-mode: vertical-rl; }
+  .mobile-builder-tabs button:hover,
+  .mobile-builder-tabs button:focus-visible,
+  .mobile-builder-tabs button[aria-expanded="true"] { background: var(--acid); box-shadow: -7px 5px 0 rgba(33, 25, 42, 0.28); color: var(--ink); outline: none; transform: translateX(-4px); }
+  .mobile-builder-backdrop { animation: mobile-builder-backdrop-in 180ms ease both; background: rgba(18, 12, 22, 0.58); border: 0; cursor: pointer; inset: 0; position: fixed; z-index: 90; }
+  .mobile-builder-drawer { animation: mobile-builder-drawer-in 260ms cubic-bezier(0.2, 0.75, 0.25, 1) both; background: #251b2d; border: 1px solid rgba(232, 255, 120, 0.6); border-radius: 18px 0 0 18px; box-shadow: -14px 12px 40px rgba(0, 0, 0, 0.42); color: var(--paper); display: flex; flex-direction: column; max-height: calc(100svh - var(--header-height) - 24px); overflow: hidden; padding: 18px; position: fixed; right: 0; top: calc(var(--header-height) + 12px); width: min(84vw, 360px); z-index: 91; }
+  .mobile-drawer-heading { align-items: center; border-bottom: 1px solid rgba(248, 236, 250, 0.2); display: flex; justify-content: space-between; margin-bottom: 14px; padding-bottom: 12px; }
+  .mobile-drawer-heading > div { display: flex; flex-direction: column; gap: 5px; }
+  .mobile-drawer-heading span,
+  .mobile-drawer-category > span { color: rgba(248, 236, 250, 0.58); font: 0.58rem 'DM Mono', monospace; letter-spacing: 0.08em; text-transform: uppercase; }
+  .mobile-drawer-heading strong { color: var(--acid); font-size: 1.1rem; text-transform: uppercase; }
+  .mobile-drawer-heading > button { background: transparent; border: 1px solid rgba(248, 236, 250, 0.35); border-radius: 50%; color: var(--paper); cursor: pointer; font-size: 1.6rem; height: 40px; line-height: 1; transition: background-color 160ms ease, color 160ms ease; width: 40px; }
+  .mobile-drawer-heading > button:hover,
+  .mobile-drawer-heading > button:focus-visible { background: var(--acid); color: var(--ink); outline: none; }
+  .mobile-drawer-category { display: grid; gap: 7px; margin-bottom: 12px; }
+  .mobile-drawer-category select { background: rgba(248, 236, 250, 0.08); border: 1px solid rgba(248, 236, 250, 0.3); color: var(--paper); font: 0.72rem 'DM Mono', monospace; min-height: 44px; padding: 8px 10px; width: 100%; }
+  .mobile-drawer-category select option { background: #251b2d; color: var(--paper); }
+  .mobile-drawer-assets { display: grid; gap: 10px; grid-template-columns: repeat(3, minmax(0, 1fr)); overflow-y: auto; overscroll-behavior: contain; padding: 3px 3px 8px; }
+  .mobile-drawer-choice { align-items: center; aspect-ratio: 1; background: rgba(248, 236, 250, 0.93); border: 1px solid transparent; border-radius: 12px; cursor: pointer; display: flex; justify-content: center; min-width: 0; padding: 9px; transition: background-color 170ms ease, border-color 170ms ease, box-shadow 170ms ease, transform 170ms ease; }
+  .mobile-drawer-choice img { display: block; height: 100%; max-height: 78px; max-width: 100%; object-fit: contain; width: auto; }
+  .mobile-drawer-choice:hover,
+  .mobile-drawer-choice:focus-visible { background: var(--acid); border-color: var(--acid); box-shadow: 0 7px 16px rgba(232, 255, 120, 0.22); outline: none; transform: translateY(-3px) scale(1.03); }
+  .mobile-drawer-choice.is-selected { background: var(--acid); border-color: var(--acid); box-shadow: 0 0 0 2px rgba(232, 255, 120, 0.3); }
+  @keyframes mobile-builder-drawer-in { from { opacity: 0.6; transform: translateX(100%); } to { opacity: 1; transform: translateX(0); } }
+  @keyframes mobile-builder-backdrop-in { from { opacity: 0; } to { opacity: 1; } }
   .builder-block { gap: 22px; padding: 88px 16px 44px; }
   .builder-intro h2 { font-size: clamp(2.65rem, 12vw, 3.25rem); }
-  .builder-workspace { gap: 22px; }
-  .builder-controls { padding-top: 4px; }
-  .category-tabs { gap: 8px; }
-  .category-tabs button { min-height: 48px; padding: 10px 13px; }
-  .asset-strip { gap: 10px; padding-bottom: 14px; }
-  .accessory-choice { flex-basis: 66px; height: 66px; }
-  .control-heading { gap: 10px; }
-  .control-heading strong { font-size: 0.75rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
