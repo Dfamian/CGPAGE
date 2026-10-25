@@ -243,10 +243,10 @@ function BuilderBlock() {
     setDragging(null)
   }
 
-  const chooseAccessory = (item) => setLayers((current) => {
-    const nextLayers = { ...current, [activeCategory]: { ...item, category: activeCategory, ...layerDefaults[activeCategory] } }
-    if (eyeCategories.has(activeCategory)) {
-      const otherEyeCategory = activeCategory === 'ojos sin pestañas' ? 'ojos con pestañas' : 'ojos sin pestañas'
+  const chooseAccessory = (item, category = activeCategory) => setLayers((current) => {
+    const nextLayers = { ...current, [category]: { ...item, category, ...layerDefaults[category] } }
+    if (eyeCategories.has(category)) {
+      const otherEyeCategory = category === 'ojos sin pestañas' ? 'ojos con pestañas' : 'ojos sin pestañas'
       delete nextLayers[otherEyeCategory]
     }
     return nextLayers
@@ -429,35 +429,48 @@ function BuilderBlock() {
         <p className="drag-instruction" aria-live="polite"><span aria-hidden="true">✥</span> Arrastra la pieza activa para moverla</p>
         <div className="builder-stage" ref={stageRef} onPointerDown={startStageGesture} onContextMenu={(event) => event.preventDefault()} aria-label="Composición interactiva. Arrastra la pieza activa para moverla y usa dos dedos para cambiar su tamaño." style={{ background: '#fff' }}>{frameAsset && <img className="builder-frame" src={frameAsset.url} alt="" aria-hidden="true" />}{Object.values(layers).map((layer) => {
       const layerSize = layer.category === 'siluetas' ? silhouetteSize : layer.width
-      const layerStyle = { left: `${layer.left}%`, top: `${layer.top}%`, width: `${layerSize}%`, zIndex: layer.zIndex, transform: `translate(-50%, -50%) rotate(${layer.rotate}deg)`, pointerEvents: layer.category === activeCategory ? 'auto' : 'none' }
+      const layerStyle = { left: `${layer.left}%`, top: `${layer.top}%`, width: `${layerSize}%`, zIndex: layer.zIndex, transform: `translate(-50%, -50%) rotate(${layer.rotate}deg)`, pointerEvents: 'auto' }
       return layer.category === 'siluetas'
-        ? <div className={`builder-layer builder-silhouette-gradient ${dragging === layer.category ? 'is-dragging' : ''}`} key={layer.category} data-category={layer.category} role="img" aria-label="Silueta seleccionada" style={{ ...layerStyle, height: `${layerSize}%`, background: silhouetteGradient, WebkitMaskImage: `url("${layer.url}")`, maskImage: `url("${layer.url}")` }} onPointerDown={(event) => { event.preventDefault(); setDragging(null) }} />
-        : <img className={`builder-layer is-draggable ${dragging === layer.category ? 'is-dragging' : ''}`} key={layer.category} data-category={layer.category} src={layer.url} alt={`${categoryLabels[layer.category]} seleccionados`} draggable="false" style={layerStyle} onDragStart={(event) => event.preventDefault()} onPointerDown={(event) => { event.preventDefault(); setDragging(fixedCategories.has(layer.category) ? null : layer.category) }} />
+        ? <div className={`builder-layer builder-silhouette-gradient ${dragging === layer.category ? 'is-dragging' : ''}`} key={layer.category} data-category={layer.category} role="img" aria-label="Silueta seleccionada" style={{ ...layerStyle, height: `${layerSize}%`, background: silhouetteGradient, WebkitMaskImage: `url("${layer.url}")`, maskImage: `url("${layer.url}")` }} onPointerDown={(event) => { event.preventDefault(); setActiveCategory(layer.category); setDragging(null) }} />
+        : <img className={`builder-layer is-draggable ${dragging === layer.category ? 'is-dragging' : ''}`} key={layer.category} data-category={layer.category} src={layer.url} alt={`${categoryLabels[layer.category]} seleccionados`} draggable="false" style={layerStyle} onDragStart={(event) => event.preventDefault()} onPointerDown={(event) => { event.preventDefault(); setActiveCategory(layer.category); setDragging(fixedCategories.has(layer.category) ? null : layer.category) }} />
     })}</div>
       <div className="mobile-builder-controls">
         <div className="mobile-builder-tabs" aria-label="Controles de composición">
           <button type="button" aria-expanded={mobileBuilderPanel === 'siluetas'} onClick={() => { setActiveCategory('siluetas'); setMobileBuilderPanel('siluetas') }}>Siluetas</button>
           <button type="button" aria-expanded={mobileBuilderPanel === 'accesorios'} onClick={() => { if (activeCategory === 'siluetas') setActiveCategory('ojos sin pestañas'); setMobileBuilderPanel('accesorios') }}>Accesorios</button>
+          <button type="button" aria-expanded={mobileBuilderPanel === 'color'} onClick={() => { setActiveCategory('siluetas'); setMobileBuilderPanel('color') }}>Color</button>
         </div>
         {mobileBuilderPanel && <>
           <button className="mobile-builder-backdrop" type="button" aria-label="Cerrar panel de piezas" onClick={() => setMobileBuilderPanel(null)} />
-          <section className="mobile-builder-drawer" role="dialog" aria-modal="true" aria-label={mobileBuilderPanel === 'siluetas' ? 'Elegir silueta' : 'Elegir accesorios'}>
+          <section className="mobile-builder-drawer" role="dialog" aria-modal="true" aria-label={mobileBuilderPanel === 'siluetas' ? 'Elegir silueta' : mobileBuilderPanel === 'color' ? 'Personalizar color' : 'Elegir accesorios'}>
             <div className="mobile-drawer-heading">
-              <div><span>{mobileBuilderPanel === 'siluetas' ? 'Base del cabezamo' : 'Personaliza tu cabezamo'}</span><strong>{mobileBuilderPanel === 'siluetas' ? 'Siluetas' : 'Accesorios'}</strong></div>
+              <div><span>{mobileBuilderPanel === 'siluetas' ? 'Base del cabezamo' : mobileBuilderPanel === 'color' ? 'Degradado de silueta' : 'Personaliza tu cabezamo'}</span><strong>{mobileBuilderPanel === 'siluetas' ? 'Siluetas' : mobileBuilderPanel === 'color' ? 'Color' : 'Accesorios'}</strong></div>
               <button type="button" onClick={() => setMobileBuilderPanel(null)} aria-label="Cerrar panel">×</button>
             </div>
-            {mobileBuilderPanel === 'accesorios' && <label className="mobile-drawer-category">
-              <span>Categoría</span>
-              <select value={mobileAccessoryCategory} onChange={(event) => setActiveCategory(event.target.value)}>
-                {categoryOrder.filter((category) => category !== 'siluetas').map((category) => <option key={category} value={category}>{categoryLabels[category]}</option>)}
-              </select>
-            </label>}
-            <div className="mobile-drawer-assets">
-              {(mobileBuilderPanel === 'siluetas' ? catalog.siluetas ?? [] : catalog[mobileAccessoryCategory] ?? []).map((item) => {
-                const category = mobileBuilderPanel === 'siluetas' ? 'siluetas' : mobileAccessoryCategory
-                return <button className={`mobile-drawer-choice ${layers[category]?.id === item.id ? 'is-selected' : ''}`} key={item.id} type="button" aria-label={`${categoryLabels[category]} ${item.name.replace(/\.svg$/i, '')}`} aria-pressed={layers[category]?.id === item.id} onClick={() => { setActiveCategory(category); chooseAccessory(item); setMobileBuilderPanel(null) }}><img src={item.url} alt="" /></button>
-              })}
-            </div>
+            {mobileBuilderPanel === 'accesorios' && <>
+              <div className="mobile-drawer-categories" aria-label="Categorías de accesorios">
+                {categoryOrder.filter((category) => category !== 'siluetas').map((category) => {
+                  const representative = catalog[category]?.[0]
+                  return <button className={mobileAccessoryCategory === category ? 'is-active' : ''} key={category} type="button" aria-pressed={mobileAccessoryCategory === category} onClick={() => setActiveCategory(category)}>
+                    {representative && <span className="mobile-category-thumbnail"><img src={representative.url} alt="" /></span>}
+                    <span>{categoryLabels[category]}</span>
+                  </button>
+                })}
+              </div>
+              <div className="mobile-drawer-assets" aria-label={`Piezas de ${categoryLabels[mobileAccessoryCategory]}`}>
+                {(catalog[mobileAccessoryCategory] ?? []).map((item) => <button className={`mobile-drawer-choice ${layers[mobileAccessoryCategory]?.id === item.id ? 'is-selected' : ''}`} key={item.id} type="button" aria-label={`${categoryLabels[mobileAccessoryCategory]} ${item.name.replace(/\.svg$/i, '')}`} aria-pressed={layers[mobileAccessoryCategory]?.id === item.id} onClick={() => { setActiveCategory(mobileAccessoryCategory); chooseAccessory(item, mobileAccessoryCategory); setMobileBuilderPanel(null) }}><img src={item.url} alt="" /></button>)}
+              </div>
+            </>}
+            {mobileBuilderPanel === 'siluetas' && <div className="mobile-drawer-assets mobile-silhouette-assets">
+              {(catalog.siluetas ?? []).map((item) => <button className={`mobile-drawer-choice ${layers.siluetas?.id === item.id ? 'is-selected' : ''}`} key={item.id} type="button" aria-label={`Silueta ${item.name.replace(/\.svg$/i, '')}`} aria-pressed={layers.siluetas?.id === item.id} onClick={() => { setActiveCategory('siluetas'); chooseAccessory(item, 'siluetas'); setMobileBuilderPanel(null) }}><img src={item.url} alt="" /></button>)}
+            </div>}
+            {mobileBuilderPanel === 'color' && <div className="mobile-silhouette-colors">
+              <p>Elige los colores inicial y final del degradado aplicado a la silueta.</p>
+              <div className="color-pickers">
+                <label>Inicio <input type="color" value={silhouetteColors[0]} onChange={(event) => setSilhouetteColors(([, end]) => [event.target.value, end])} /></label>
+                <label>Final <input type="color" value={silhouetteColors[1]} onChange={(event) => setSilhouetteColors(([start, end]) => [start, event.target.value])} /></label>
+              </div>
+            </div>}
           </section>
         </>}
       </div>
