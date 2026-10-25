@@ -19,6 +19,7 @@ Object.values(catalog).forEach((items) => items.sort((a, b) => a.name.localeComp
 const frameAsset = catalog.marco?.[0]
 const fixedCategories = new Set(['siluetas'])
 const verticalCategories = new Set(['ojos sin pestañas', 'ojos con pestañas', 'gafas', 'Gorras'])
+const eyeCategories = new Set(['ojos sin pestañas', 'ojos con pestañas'])
 const faceAlignedCategories = new Set(['aretes', 'Balacas'])
 // Cada silueta comparte una caja cuadrada; mask-size: contain conserva su forma.
 const silhouetteSize = 60
@@ -140,11 +141,7 @@ function App() {
         <p className="music-overline">Rap · exploración · libertad</p>
         <h2 id="music-title">Descubre la música <em>de CG SAMO.</em></h2>
         <p className="music-description">Un viaje por el rap y sus infinitas formas, sin etiquetas ni un lugar definitivo al que pertenecer.</p>
-        <a className="music-link" href="#titulo-homles" onClick={(event) => {
-          event.preventDefault()
-          document.getElementById('titulo-homles')?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
-          window.history.replaceState(null, '', '#titulo-homles')
-        }}>Conoce Homeless &amp; Rappers <span aria-hidden="true">↗</span></a>
+        <a className="music-link" href="https://ffm.to/homeless-rappers" target="_blank" rel="noopener noreferrer">Conoce Homeless &amp; Rappers <span aria-hidden="true">↗</span></a>
       </div>
       <div className="music-project">
         <span>Proyecto destacado</span>
@@ -164,6 +161,7 @@ function App() {
 }
 function BuilderBlock() {
   const stageRef = useRef(null)
+  const gestureRef = useRef({ pointers: new Map(), pinch: null })
   const [activeCategory, setActiveCategory] = useState(categoryOrder[0])
   const [layers, setLayers] = useState({})
   const [dragging, setDragging] = useState(null)
@@ -176,24 +174,66 @@ function BuilderBlock() {
 
   useEffect(() => {
     const moveLayer = (event) => {
+      const gesture = gestureRef.current
+      if (event.pointerType === 'touch' && gesture.pointers.has(event.pointerId)) {
+        gesture.pointers.set(event.pointerId, { x: event.clientX, y: event.clientY })
+        if (gesture.pinch && gesture.pointers.size >= 2) {
+          const pinch = gesture.pinch
+          const [first, second] = [...gesture.pointers.values()]
+          const distance = Math.hypot(second.x - first.x, second.y - first.y)
+          const width = Math.max(8, Math.min(85, pinch.startWidth * distance / pinch.startDistance))
+          setLayers((current) => current[pinch.category]
+            ? { ...current, [pinch.category]: { ...current[pinch.category], width } }
+            : current)
+          return
+        }
+      }
       if (!dragging || !stageRef.current) return
       const bounds = stageRef.current.getBoundingClientRect()
       const top = Math.max(5, Math.min(95, ((event.clientY - bounds.top) / bounds.height) * 100))
       setLayers((current) => {
         const currentLayer = current[dragging]
+        if (!currentLayer) return current
         const left = verticalCategories.has(dragging) || faceAlignedCategories.has(dragging) ? currentLayer.left : Math.max(6, Math.min(94, ((event.clientX - bounds.left) / bounds.width) * 100))
         return { ...current, [dragging]: { ...currentLayer, left, top } }
       })
     }
-    const stopDragging = () => setDragging(null)
+    const stopDragging = (event) => {
+      const gesture = gestureRef.current
+      gesture.pointers.delete(event.pointerId)
+      if (gesture.pointers.size < 2) gesture.pinch = null
+      setDragging(null)
+    }
     window.addEventListener('pointermove', moveLayer)
     window.addEventListener('pointerup', stopDragging)
-    return () => { window.removeEventListener('pointermove', moveLayer); window.removeEventListener('pointerup', stopDragging) }
+    window.addEventListener('pointercancel', stopDragging)
+    return () => {
+      window.removeEventListener('pointermove', moveLayer)
+      window.removeEventListener('pointerup', stopDragging)
+      window.removeEventListener('pointercancel', stopDragging)
+    }
   }, [dragging])
+
+  const startStageGesture = (event) => {
+    if (event.pointerType !== 'touch') return
+    const gesture = gestureRef.current
+    gesture.pointers.set(event.pointerId, { x: event.clientX, y: event.clientY })
+    if (gesture.pointers.size !== 2) return
+    const target = event.target instanceof Element ? event.target.closest('[data-category]') : null
+    const category = target?.dataset.category ?? activeCategory
+    const layer = layers[category]
+    if (!layer || fixedCategories.has(category)) return
+    const [first, second] = [...gesture.pointers.values()]
+    const startDistance = Math.hypot(second.x - first.x, second.y - first.y)
+    if (!startDistance) return
+    gesture.pinch = { category, startDistance, startWidth: layer.width }
+    setActiveCategory(category)
+    setDragging(null)
+  }
 
   const chooseAccessory = (item) => setLayers((current) => {
     const nextLayers = { ...current, [activeCategory]: { ...item, category: activeCategory, ...layerDefaults[activeCategory] } }
-    if (verticalCategories.has(activeCategory)) {
+    if (eyeCategories.has(activeCategory)) {
       const otherEyeCategory = activeCategory === 'ojos sin pestañas' ? 'ojos con pestañas' : 'ojos sin pestañas'
       delete nextLayers[otherEyeCategory]
     }
@@ -216,7 +256,7 @@ function BuilderBlock() {
     accessoryCategories.sort(() => Math.random() - 0.5).slice(0, 3).forEach(addRandomLayer)
     setLayers(nextLayers)
   }
-  const stageGradient = '#ffffff'
+  const stageGradient = `linear-gradient(135deg, ${stageColors[0]}, ${stageColors[1]})`
   const silhouetteGradient = `radial-gradient(circle, ${silhouetteColors[0]} 0%, ${silhouetteColors[1]} 100%)`
   const createCompositionCanvas = async () => {
     const stage = stageRef.current
@@ -228,7 +268,10 @@ function BuilderBlock() {
     canvas.height = height
     const context = canvas.getContext('2d')
     if (!context) throw new Error('No se pudo preparar la imagen en este navegador.')
-    context.fillStyle = '#ffffff'
+    const backgroundGradient = context.createLinearGradient(0, 0, width, height)
+    backgroundGradient.addColorStop(0, stageColors[0])
+    backgroundGradient.addColorStop(1, stageColors[1])
+    context.fillStyle = backgroundGradient
     context.fillRect(0, 0, width, height)
     const drawContain = (image, x, y, boxWidth, boxHeight) => {
       const scale = Math.min(boxWidth / image.naturalWidth, boxHeight / image.naturalHeight)
@@ -243,7 +286,8 @@ function BuilderBlock() {
       context.textAlign = 'center'
       context.fillText(cabezamoName.trim() || 'Mi cabezamo', width / 2, 52)
     }
-    for (const layer of Object.values(layers)) {
+    const orderedLayers = Object.values(layers).sort((first, second) => first.zIndex - second.zIndex)
+    for (const layer of orderedLayers) {
       const image = await loadCanvasImage(layer.url)
       const layerWidth = layer.category === 'siluetas' ? silhouetteSize : layer.width
       const drawWidth = width * layerWidth / 100
@@ -371,19 +415,33 @@ function BuilderBlock() {
     <div className="builder-intro">
       <p className="eyebrow">Cabezamos / Estudio interactivo</p>
       <h2>CREA TU<br /><em>CABEZAMO!</em></h2>
-      <p className="intro">Los cabezazos fueron creados en un inicio exclusivamente para los creativos y artistas que aportaron significativamente al disco, pero ahora tu también puedes ser parte, crea tu cabezamo aquí!.</p>
+      <p className="intro">Los cabezamos nacieron para los artistas que aportaron al disco. Ahora tú también puedes crear el tuyo: elige una base, agrega piezas y personalízalo.</p>
     </div>
-    <div className="builder-workspace"><div className="builder-stage" ref={stageRef} aria-label="Composición interactiva" style={{ background: stageGradient }}>{frameAsset && <img className="builder-frame" src={frameAsset.url} alt="" aria-hidden="true" />}{Object.values(layers).map((layer) => {
+    <div className="builder-workspace"><div className="builder-preview"><div className="builder-stage" ref={stageRef} onPointerDown={startStageGesture} aria-label="Composición interactiva. Arrastra las piezas para moverlas y usa dos dedos para cambiar su tamaño." style={{ background: stageGradient }}>{frameAsset && <img className="builder-frame" src={frameAsset.url} alt="" aria-hidden="true" />}{Object.values(layers).map((layer) => {
       const layerSize = layer.category === 'siluetas' ? silhouetteSize : layer.width
       return layer.category === 'siluetas'
-        ? <div className={`builder-layer builder-silhouette-gradient ${dragging === layer.category ? 'is-dragging' : ''}`} key={layer.category} role="img" aria-label="Silueta seleccionada" style={{ left: `${layer.left}%`, top: `${layer.top}%`, width: `${layerSize}%`, height: `${layerSize}%`, zIndex: layer.zIndex, transform: `translate(-50%, -50%) rotate(${layer.rotate}deg)`, background: silhouetteGradient, WebkitMaskImage: `url("${layer.url}")`, maskImage: `url("${layer.url}")` }} onPointerDown={(event) => { event.preventDefault(); setActiveCategory(layer.category); setDragging(null) }} />
-        : <img className={`builder-layer is-draggable ${dragging === layer.category ? 'is-dragging' : ''}`} key={layer.category} src={layer.url} alt={`${categoryLabels[layer.category]} seleccionados`} style={{ left: `${layer.left}%`, top: `${layer.top}%`, width: `${layerSize}%`, zIndex: layer.zIndex, transform: `translate(-50%, -50%) rotate(${layer.rotate}deg)` }} onPointerDown={(event) => { event.preventDefault(); setActiveCategory(layer.category); setDragging(fixedCategories.has(layer.category) ? null : layer.category) }} />
-    })}<span className="stage-label">ARRASTRA / COMBINA</span></div>
+        ? <div className={`builder-layer builder-silhouette-gradient ${dragging === layer.category ? 'is-dragging' : ''}`} key={layer.category} data-category={layer.category} role="img" aria-label="Silueta seleccionada" style={{ left: `${layer.left}%`, top: `${layer.top}%`, width: `${layerSize}%`, height: `${layerSize}%`, zIndex: layer.zIndex, transform: `translate(-50%, -50%) rotate(${layer.rotate}deg)`, background: silhouetteGradient, WebkitMaskImage: `url("${layer.url}")`, maskImage: `url("${layer.url}")` }} onPointerDown={(event) => { event.preventDefault(); setActiveCategory(layer.category); setDragging(null) }} />
+        : <img className={`builder-layer is-draggable ${dragging === layer.category ? 'is-dragging' : ''}`} key={layer.category} data-category={layer.category} src={layer.url} alt={`${categoryLabels[layer.category]} seleccionados`} style={{ left: `${layer.left}%`, top: `${layer.top}%`, width: `${layerSize}%`, zIndex: layer.zIndex, transform: `translate(-50%, -50%) rotate(${layer.rotate}deg)` }} onPointerDown={(event) => { event.preventDefault(); setActiveCategory(layer.category); setDragging(fixedCategories.has(layer.category) ? null : layer.category) }} />
+    })}<span className="stage-label">ARRASTRA / COMBINA</span></div><p className="stage-help">Arrastra las piezas para moverlas. En celular, júntalas o sepáralas con dos dedos para cambiar su tamaño.</p></div>
       <div className="builder-controls">
         <div className="control-section">
-          <div className="control-heading"><span>01</span><strong>Escala la pieza activa</strong></div>
+          <div className="control-heading">
+            <span>01</span><strong>Elige una pieza</strong>
+            <button className="remove-action" type="button" onClick={removeAccessory} disabled={!layers[activeCategory]} aria-label={`Quitar ${categoryLabels[activeCategory]}`}>Quitar <span>×</span></button>
+          </div>
+          <p className="control-hint">Selecciona una categoría y luego toca una miniatura.</p>
+          <div className="category-tabs" role="tablist" aria-label="Categorías de piezas">
+            {categoryOrder.map((category) => <button className={activeCategory === category ? 'is-active' : ''} key={category} type="button" aria-pressed={activeCategory === category} onClick={() => setActiveCategory(category)}>{categoryLabels[category]}</button>)}
+          </div>
+          <div className="asset-strip accessory-strip">
+            {(catalog[activeCategory] ?? []).map((item) => <button className={`asset-choice accessory-choice ${layers[activeCategory]?.id === item.id ? 'is-selected' : ''}`} key={item.id} type="button" aria-label={`${categoryLabels[activeCategory]} ${item.name.replace(/\.svg$/i, '')}`} aria-pressed={layers[activeCategory]?.id === item.id} onClick={() => chooseAccessory(item)}><img src={item.url} alt="" /></button>)}
+          </div>
+        </div>
+        <div className="control-section">
+          <div className="control-heading"><span>02</span><strong>Ajusta tamaño y color</strong></div>
           <label className="scale-control" htmlFor="piece-scale">
-            <span>{silhouetteScaleLocked ? 'Tamaño fijo' : layers[activeCategory] ? `${Math.round(layers[activeCategory].width)}%` : 'Elige una pieza'}</span>
+            <span>Tamaño</span>
+            <output>{silhouetteScaleLocked ? 'Fijo' : layers[activeCategory] ? `${Math.round(layers[activeCategory].width)}%` : '—'}</output>
             <input
               id="piece-scale"
               type="range"
@@ -394,31 +452,19 @@ function BuilderBlock() {
               onChange={(event) => setLayers((current) => ({ ...current, [activeCategory]: { ...current[activeCategory], width: Number(event.target.value) } }))}
             />
           </label>
-        </div>
-        {activeCategory === 'siluetas' && <div className="control-section color-controls">
-          <div className="control-heading"><span>02</span><strong>Degradado de silueta</strong></div>
-          <div className="color-pickers">
-            <label>Inicio <input type="color" value={silhouetteColors[0]} onChange={(event) => setSilhouetteColors(([, end]) => [event.target.value, end])} /></label>
-            <label>Final <input type="color" value={silhouetteColors[1]} onChange={(event) => setSilhouetteColors(([start]) => [start, event.target.value])} /></label>
-          </div>
-        </div>}
-        <div className="control-section color-controls">
-          <div className="control-heading"><span>{activeCategory === 'siluetas' ? '03' : '02'}</span><strong>Fondo del lienzo</strong></div>
-          <div className="color-pickers">
-            <label>Inicio <input type="color" value={stageColors[0]} onChange={(event) => setStageColors(([, end]) => [event.target.value, end])} /></label>
-            <label>Final <input type="color" value={stageColors[1]} onChange={(event) => setStageColors(([start]) => [start, event.target.value])} /></label>
-          </div>
-        </div>
-        <div className="control-section">
-          <div className="control-heading">
-            <span>{activeCategory === 'siluetas' ? '04' : '03'}</span><strong>Añade una pieza</strong>
-            <button className="remove-action" type="button" onClick={removeAccessory} disabled={!layers[activeCategory]} aria-label={`Quitar ${categoryLabels[activeCategory]}`}>Quitar <span>×</span></button>
-          </div>
-          <div className="category-tabs" role="tablist">
-            {categoryOrder.map((category) => <button className={activeCategory === category ? 'is-active' : ''} key={category} type="button" onClick={() => setActiveCategory(category)}>{categoryLabels[category]}</button>)}
-          </div>
-          <div className="asset-strip accessory-strip">
-            {(catalog[activeCategory] ?? []).map((item) => <button className={`asset-choice accessory-choice ${layers[activeCategory]?.id === item.id ? 'is-selected' : ''}`} key={item.id} type="button" onClick={() => chooseAccessory(item)}><img src={item.url} alt="" /></button>)}
+          {activeCategory === 'siluetas' && <div className="color-controls">
+            <strong className="sub-control-heading">Degradado de silueta</strong>
+            <div className="color-pickers">
+              <label>Inicio <input type="color" value={silhouetteColors[0]} onChange={(event) => setSilhouetteColors(([, end]) => [event.target.value, end])} /></label>
+              <label>Final <input type="color" value={silhouetteColors[1]} onChange={(event) => setSilhouetteColors(([start, end]) => [start, event.target.value])} /></label>
+            </div>
+          </div>}
+          <div className="color-controls">
+            <strong className="sub-control-heading">Fondo del lienzo</strong>
+            <div className="color-pickers">
+              <label>Inicio <input type="color" value={stageColors[0]} onChange={(event) => setStageColors(([, end]) => [event.target.value, end])} /></label>
+              <label>Final <input type="color" value={stageColors[1]} onChange={(event) => setStageColors(([start, end]) => [start, event.target.value])} /></label>
+            </div>
           </div>
         </div>
       </div>
