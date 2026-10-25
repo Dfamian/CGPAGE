@@ -216,7 +216,6 @@ h1 em, h2 em { color: #ad59bc; font-style: normal; }
 .builder-layer { cursor: grab; height: auto; max-width: none; pointer-events: auto; position: absolute; user-select: none; }
 .builder-layer.is-draggable { touch-action: none; }
 .builder-layer.is-dragging { cursor: grabbing; filter: drop-shadow(3px 4px 0 rgba(33, 25, 42, 0.28)); }
-.stage-label { bottom: 13px; color: rgba(33, 25, 42, 0.55); font-family: 'DM Mono', monospace; font-size: 0.55rem; left: 15px; letter-spacing: 0.08em; position: absolute; text-transform: uppercase; z-index: 10; }
 .builder-controls { min-width: 0; }
 .control-section { border-top: 1px solid rgba(248, 236, 250, 0.27); padding: 15px 0 22px; }
 .control-heading { align-items: center; display: flex; gap: 13px; margin-bottom: 15px; }
@@ -429,7 +428,6 @@ footer { border-top: 1px solid rgba(33, 25, 42, 0.35); display: flex; font-famil
   /* Estado visual mientras el usuario arrastra una pieza. */
   .builder-layer.is-dragging { cursor: grabbing; filter: drop-shadow(3px 4px 0 rgba(33, 25, 42, 0.28)); }
   /* Texto de ayuda dentro del escenario. */
-  .stage-label { bottom: 13px; color: rgba(33, 25, 42, 0.55); font-family: 'DM Mono', monospace; font-size: 0.55rem; left: 15px; letter-spacing: 0.08em; position: absolute; text-transform: uppercase; z-index: 10; }
   /* Columna que contiene los controles de seleccion. */
   .builder-controls { min-width: 0; }
   /* Separacion visual entre selector de silueta y selector de accesorios. */
@@ -676,24 +674,57 @@ footer { border-top: 1px solid rgba(33, 25, 42, 0.35); display: flex; font-famil
 }
 
 .builder-preview { min-width: 0; width: min(100%, 400px); }
-.builder-stage { touch-action: none; width: 100%; }
-.stage-help { color: rgba(248, 236, 250, 0.68); font-family: 'DM Mono', monospace; font-size: 0.62rem; line-height: 1.55; margin: 18px 0 0; }
+.builder-workspace { gap: clamp(20px, 2.5vw, 38px); grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr); }
+.builder-preview { align-self: start; width: 100%; }
+.builder-stage { background: #fff; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; width: 100%; }
+.builder-stage * { user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+.drag-instruction { align-items: center; animation: drag-instruction-pulse 2.8s ease-in-out infinite; background: rgba(232, 255, 120, 0.1); border: 1px solid rgba(232, 255, 120, 0.5); border-radius: 999px; color: var(--acid); display: flex; font-family: 'DM Mono', monospace; font-size: clamp(0.68rem, 0.9vw, 0.8rem); font-weight: 500; gap: 9px; justify-content: center; letter-spacing: 0.04em; margin: 0 auto 12px; max-width: max-content; padding: 10px 16px; text-align: center; }
+.drag-instruction span { font-size: 1.1rem; }
+@keyframes drag-instruction-pulse {
+  0%, 100% { box-shadow: 0 0 0 rgba(232, 255, 120, 0); text-shadow: 0 0 0 rgba(232, 255, 120, 0); }
+  45% { box-shadow: 0 0 22px rgba(232, 255, 120, 0.32); text-shadow: 0 0 10px rgba(232, 255, 120, 0.75); }
+}
 .control-hint { color: rgba(248, 236, 250, 0.62); font-size: 0.8rem; line-height: 1.5; margin: -4px 0 12px; }
 .scale-control { display: grid; gap: 5px 12px; grid-template-columns: 1fr auto; }
 .scale-control span { align-self: center; }
 .scale-control output { color: var(--acid); font-family: 'DM Mono', monospace; font-size: 0.7rem; }
-.scale-control input { grid-column: 1 / -1; min-height: 44px; touch-action: pan-y; }
+.builder-preview > .scale-control { background: rgba(248, 236, 250, 0.08); border: 1px solid rgba(248, 236, 250, 0.2); border-radius: 12px; margin-top: 18px; padding: 13px 17px 8px; }
+.builder-preview > .scale-control input { grid-column: 1 / -1; min-height: 42px; touch-action: pan-y; width: 100%; }
+.builder-preview > .scale-control span { color: var(--paper); font-size: 0.68rem; min-width: 0; }
 .sub-control-heading { color: rgba(248, 236, 250, 0.72); display: block; font-family: 'DM Mono', monospace; font-size: 0.62rem; font-weight: 400; letter-spacing: 0.06em; margin: 16px 0 10px; text-transform: uppercase; }
-.color-controls { margin-top: 6px; }
+.color-controls { margin-top: 12px; }
+.color-pickers { align-items: center; justify-content: center; gap: clamp(20px, 4vw, 52px); }
+.color-pickers label { align-items: center; flex-direction: column; font-size: 0.68rem; gap: 9px; }
+.color-pickers input { border-radius: 10px; height: 64px; padding: 5px; transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease; width: 94px; }
+.color-pickers input:hover,
+.color-pickers input:focus-visible { border-color: var(--acid); box-shadow: 0 0 0 4px rgba(232, 255, 120, 0.16); outline: none; transform: translateY(-3px) scale(1.04); }
 .category-tabs button,
 .asset-choice,
 .remove-action { min-height: 44px; }
 
 @media (max-width: 700px) {
-  .builder-preview { align-self: center; width: min(100%, 410px); }
+  .builder-preview { align-self: center; width: 100%; }
+  .builder-workspace { grid-template-columns: minmax(0, 1fr); }
   .builder-stage { width: 100%; }
-  .stage-help { font-size: 0.65rem; margin-top: 14px; }
+  .drag-instruction { font-size: 0.7rem; margin-bottom: 10px; min-height: 44px; width: 100%; }
   .control-section { padding: 18px 0 22px; }
   .scale-control { gap: 6px 12px; }
+  .builder-preview > .scale-control { margin-top: 14px; padding: 12px 14px 6px; }
+  .color-pickers { gap: 28px; }
+  .color-pickers input { height: 68px; width: 100px; }
+  .builder-block { gap: 22px; padding: 88px 16px 44px; }
+  .builder-intro h2 { font-size: clamp(2.65rem, 12vw, 3.25rem); }
+  .builder-workspace { gap: 22px; }
+  .builder-controls { padding-top: 4px; }
+  .category-tabs { gap: 8px; }
+  .category-tabs button { min-height: 48px; padding: 10px 13px; }
+  .asset-strip { gap: 10px; padding-bottom: 14px; }
+  .accessory-choice { flex-basis: 66px; height: 66px; }
+  .control-heading { gap: 10px; }
+  .control-heading strong { font-size: 0.75rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drag-instruction { animation: none; }
 }
  

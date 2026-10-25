@@ -169,7 +169,6 @@ function BuilderBlock() {
   const [includeName, setIncludeName] = useState(true)
   const [shareMessage, setShareMessage] = useState('')
   const [silhouetteColors, setSilhouetteColors] = useState(['#ff4d6d', '#ffd166'])
-  const [stageColors, setStageColors] = useState(['#e8ff78', '#f8ecfa'])
   const silhouetteScaleLocked = fixedCategories.has(activeCategory)
 
   useEffect(() => {
@@ -216,6 +215,7 @@ function BuilderBlock() {
 
   const startStageGesture = (event) => {
     if (event.pointerType !== 'touch') return
+    event.preventDefault()
     const gesture = gestureRef.current
     gesture.pointers.set(event.pointerId, { x: event.clientX, y: event.clientY })
     if (gesture.pointers.size !== 2) return
@@ -256,7 +256,6 @@ function BuilderBlock() {
     accessoryCategories.sort(() => Math.random() - 0.5).slice(0, 3).forEach(addRandomLayer)
     setLayers(nextLayers)
   }
-  const stageGradient = `linear-gradient(135deg, ${stageColors[0]}, ${stageColors[1]})`
   const silhouetteGradient = `radial-gradient(circle, ${silhouetteColors[0]} 0%, ${silhouetteColors[1]} 100%)`
   const createCompositionCanvas = async () => {
     const stage = stageRef.current
@@ -268,10 +267,7 @@ function BuilderBlock() {
     canvas.height = height
     const context = canvas.getContext('2d')
     if (!context) throw new Error('No se pudo preparar la imagen en este navegador.')
-    const backgroundGradient = context.createLinearGradient(0, 0, width, height)
-    backgroundGradient.addColorStop(0, stageColors[0])
-    backgroundGradient.addColorStop(1, stageColors[1])
-    context.fillStyle = backgroundGradient
+    context.fillStyle = '#ffffff'
     context.fillRect(0, 0, width, height)
     const drawContain = (image, x, y, boxWidth, boxHeight) => {
       const scale = Math.min(boxWidth / image.naturalWidth, boxHeight / image.naturalHeight)
@@ -417,12 +413,30 @@ function BuilderBlock() {
       <h2>CREA TU<br /><em>CABEZAMO!</em></h2>
       <p className="intro">Los cabezamos nacieron para los artistas que aportaron al disco. Ahora tú también puedes crear el tuyo: elige una base, agrega piezas y personalízalo.</p>
     </div>
-    <div className="builder-workspace"><div className="builder-preview"><div className="builder-stage" ref={stageRef} onPointerDown={startStageGesture} aria-label="Composición interactiva. Arrastra las piezas para moverlas y usa dos dedos para cambiar su tamaño." style={{ background: stageGradient }}>{frameAsset && <img className="builder-frame" src={frameAsset.url} alt="" aria-hidden="true" />}{Object.values(layers).map((layer) => {
+    <div className="builder-workspace"><div className="builder-preview">
+        <p className="drag-instruction" aria-live="polite"><span aria-hidden="true">✥</span> Arrastra la pieza activa para moverla</p>
+        <div className="builder-stage" ref={stageRef} onPointerDown={startStageGesture} onContextMenu={(event) => event.preventDefault()} aria-label="Composición interactiva. Arrastra la pieza activa para moverla y usa dos dedos para cambiar su tamaño." style={{ background: '#fff' }}>{frameAsset && <img className="builder-frame" src={frameAsset.url} alt="" aria-hidden="true" />}{Object.values(layers).map((layer) => {
       const layerSize = layer.category === 'siluetas' ? silhouetteSize : layer.width
+      const layerStyle = { left: `${layer.left}%`, top: `${layer.top}%`, width: `${layerSize}%`, zIndex: layer.zIndex, transform: `translate(-50%, -50%) rotate(${layer.rotate}deg)`, pointerEvents: layer.category === activeCategory ? 'auto' : 'none' }
       return layer.category === 'siluetas'
-        ? <div className={`builder-layer builder-silhouette-gradient ${dragging === layer.category ? 'is-dragging' : ''}`} key={layer.category} data-category={layer.category} role="img" aria-label="Silueta seleccionada" style={{ left: `${layer.left}%`, top: `${layer.top}%`, width: `${layerSize}%`, height: `${layerSize}%`, zIndex: layer.zIndex, transform: `translate(-50%, -50%) rotate(${layer.rotate}deg)`, background: silhouetteGradient, WebkitMaskImage: `url("${layer.url}")`, maskImage: `url("${layer.url}")` }} onPointerDown={(event) => { event.preventDefault(); setActiveCategory(layer.category); setDragging(null) }} />
-        : <img className={`builder-layer is-draggable ${dragging === layer.category ? 'is-dragging' : ''}`} key={layer.category} data-category={layer.category} src={layer.url} alt={`${categoryLabels[layer.category]} seleccionados`} style={{ left: `${layer.left}%`, top: `${layer.top}%`, width: `${layerSize}%`, zIndex: layer.zIndex, transform: `translate(-50%, -50%) rotate(${layer.rotate}deg)` }} onPointerDown={(event) => { event.preventDefault(); setActiveCategory(layer.category); setDragging(fixedCategories.has(layer.category) ? null : layer.category) }} />
-    })}<span className="stage-label">ARRASTRA / COMBINA</span></div><p className="stage-help">Arrastra las piezas para moverlas. En celular, júntalas o sepáralas con dos dedos para cambiar su tamaño.</p></div>
+        ? <div className={`builder-layer builder-silhouette-gradient ${dragging === layer.category ? 'is-dragging' : ''}`} key={layer.category} data-category={layer.category} role="img" aria-label="Silueta seleccionada" style={{ ...layerStyle, height: `${layerSize}%`, background: silhouetteGradient, WebkitMaskImage: `url("${layer.url}")`, maskImage: `url("${layer.url}")` }} onPointerDown={(event) => { event.preventDefault(); setDragging(null) }} />
+        : <img className={`builder-layer is-draggable ${dragging === layer.category ? 'is-dragging' : ''}`} key={layer.category} data-category={layer.category} src={layer.url} alt={`${categoryLabels[layer.category]} seleccionados`} draggable="false" style={layerStyle} onDragStart={(event) => event.preventDefault()} onPointerDown={(event) => { event.preventDefault(); setDragging(fixedCategories.has(layer.category) ? null : layer.category) }} />
+    })}</div>
+          <label className="scale-control" htmlFor="piece-scale">
+            <span>Tamaño de {categoryLabels[activeCategory]}</span>
+            <output>{silhouetteScaleLocked ? 'Fijo' : layers[activeCategory] ? `${Math.round(layers[activeCategory].width)}%` : '—'}</output>
+            <input
+              id="piece-scale"
+              type="range"
+              min="8"
+              max="85"
+              value={silhouetteScaleLocked ? silhouetteSize : layers[activeCategory]?.width ?? 30}
+              disabled={!layers[activeCategory] || silhouetteScaleLocked}
+              onChange={(event) => setLayers((current) => ({ ...current, [activeCategory]: { ...current[activeCategory], width: Number(event.target.value) } }))}
+            />
+          </label>
+          <p className="stage-help">Arrastra una pieza para moverla. En celular, júntala o sepárala con dos dedos para cambiar su tamaño.</p>
+        </div>
       <div className="builder-controls">
         <div className="control-section">
           <div className="control-heading">
@@ -438,20 +452,7 @@ function BuilderBlock() {
           </div>
         </div>
         <div className="control-section">
-          <div className="control-heading"><span>02</span><strong>Ajusta tamaño y color</strong></div>
-          <label className="scale-control" htmlFor="piece-scale">
-            <span>Tamaño</span>
-            <output>{silhouetteScaleLocked ? 'Fijo' : layers[activeCategory] ? `${Math.round(layers[activeCategory].width)}%` : '—'}</output>
-            <input
-              id="piece-scale"
-              type="range"
-              min="8"
-              max="85"
-              value={silhouetteScaleLocked ? silhouetteSize : layers[activeCategory]?.width ?? 30}
-              disabled={!layers[activeCategory] || silhouetteScaleLocked}
-              onChange={(event) => setLayers((current) => ({ ...current, [activeCategory]: { ...current[activeCategory], width: Number(event.target.value) } }))}
-            />
-          </label>
+          <div className="control-heading"><span>02</span><strong>Personaliza el color</strong></div>
           {activeCategory === 'siluetas' && <div className="color-controls">
             <strong className="sub-control-heading">Degradado de silueta</strong>
             <div className="color-pickers">
@@ -459,13 +460,7 @@ function BuilderBlock() {
               <label>Final <input type="color" value={silhouetteColors[1]} onChange={(event) => setSilhouetteColors(([start, end]) => [start, event.target.value])} /></label>
             </div>
           </div>}
-          <div className="color-controls">
-            <strong className="sub-control-heading">Fondo del lienzo</strong>
-            <div className="color-pickers">
-              <label>Inicio <input type="color" value={stageColors[0]} onChange={(event) => setStageColors(([, end]) => [event.target.value, end])} /></label>
-              <label>Final <input type="color" value={stageColors[1]} onChange={(event) => setStageColors(([start, end]) => [start, event.target.value])} /></label>
-            </div>
-          </div>
+          {activeCategory !== 'siluetas' && <p className="control-hint">Selecciona la silueta para ajustar sus colores.</p>}
         </div>
       </div>
     </div>
