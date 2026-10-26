@@ -3,7 +3,27 @@ import wallpaper from './assets/walpaper jpg.jpg'
 import cgSamoLogo from './assets/Ilustraciones/CGSAMO-header.png'
 import homelessRappersLogo from './assets/Homles and rapers.svg'
 import homelessRappersCover from './assets/Portada album.PNG'
+import instagramIcon from './assets/Redes Sociales/instagram-svgrepo-com.svg'
+import tikTokIcon from './assets/Redes Sociales/tik-tok-svgrepo-com.svg'
+import appleItunesIcon from './assets/Redes Sociales/Redes Musica/apple-itunes-logo-svgrepo-com.svg'
+import appleMusicIcon from './assets/Redes Sociales/Redes Musica/apple-music-svgrepo-com.svg'
+import deezerIcon from './assets/Redes Sociales/Redes Musica/deezer-svgrepo-com.svg'
+import spotifyIcon from './assets/Redes Sociales/Redes Musica/spotify-color-svgrepo-com.svg'
+import tidalIcon from './assets/Redes Sociales/Redes Musica/tidal-logo-svgrepo-com.svg'
+import youtubeMusicIcon from './assets/Redes Sociales/Redes Musica/youtube-music-song-multimedia-audio-svgrepo-com.svg'
 import './App.css'
+const musicPlatforms = [
+  { name: 'YouTube Music', icon: youtubeMusicIcon, url: 'https://music.youtube.com/playlist?list=OLAK5uy_nWZ8PSqSxyhdrhWWFbh7U1lvwSPgMRcEs' },
+  { name: 'Deezer', icon: deezerIcon, url: 'https://www.deezer.com/es/album/1111221222' },
+  { name: 'Tidal', icon: tidalIcon, url: 'https://tidal.com/album/566259354' },
+  { name: 'iTunes', icon: appleItunesIcon, url: 'https://music.apple.com/co/album/homeless-rappers/6818197695' },
+  { name: 'Apple Music', icon: appleMusicIcon, url: 'https://music.apple.com/co/album/homeless-rappers/6818197695' },
+  { name: 'Spotify', icon: spotifyIcon, url: 'https://open.spotify.com/intl-es/album/0LhsrTlVp1Ny5gz2OmNNRK?si=jA_4LBntSa-CWPymT3aWiQ&nd=1&dlsi=c2006ac944944883' },
+]
+const socialLinks = [
+  { name: 'Instagram', icon: instagramIcon, url: 'https://www.instagram.com/cgsamo?cplk=MnVudmUyc3ZmejQy&utm_source=qr' },
+  { name: 'TikTok', icon: tikTokIcon, url: 'https://www.tiktok.com/@samecgsamo?_r=1&_t=ZS-9AqrUYOzlCO' },
+]
 const assetFiles = import.meta.glob('./assets/accesorios samo/**/*.svg', { eager: true, import: 'default', query: '?url' })
 const categoryLabels = { siluetas: 'Siluetas', 'ojos sin pestañas': 'Ojos', 'ojos con pestañas': 'Ojos con pestañas', gafas: 'Gafas', aretes: 'Aretes', Balacas: 'Balacas', Gorras: 'Gorras', Headsets: 'Headsets', mas: 'Más', exclamaciones: 'Exclamaciones' }
 const categoryOrder = Object.keys(categoryLabels)
@@ -105,7 +125,7 @@ function App() {
                 }}
                 style={{ '--card-offset': offset, '--card-depth': Math.abs(offset), '--card-scale': Math.max(0.58, 1 - Math.abs(offset) * 0.2), '--slide-direction': slideDirection }}
               >
-                <img src={image.url} alt={`Foto ${index + 1}: ${image.name}`} />
+                <img src={image.url} alt={`Foto ${index + 1}: ${image.name}`} loading={offset === 0 ? 'eager' : 'lazy'} decoding="async" />
               </button>
             })
             : <div className="gallery-empty"><span>FOTOS DEL CARRUSEL</span><span>Agrega imágenes en src/assets/carrusel/</span></div>}
@@ -133,15 +153,27 @@ function App() {
           <p>Homeless &amp; Rappers es mi primer proyecto de larga duración, un mixtape que busca reflejar lo que siento por el rap, su infinita diversidad y su verdadero sentido. Este viaje tiene un punto de partida, pero ningún lugar seguro ni un hogar definitivo; nos recuerda que en el género nunca debemos dejar de explorar. A menudo sentimos que no pertenecemos a ninguna parte, y precisamente de eso se trata: no hay por qué pertenecer.</p>
         </div>
       </div>
-      <img className="project-cover" src={homelessRappersCover} alt="Portada del álbum Homeless & Rappers" />
+      <img className="project-cover" src={homelessRappersCover} alt="Portada del álbum Homeless & Rappers" loading="lazy" decoding="async" />
     </section>
-    <section className="music-block" id="musica">
+    <section className="music-block" id="musica" aria-labelledby="music-title">
       <p className="eyebrow">04 / El sonido</p>
       <div className="music-content">
         <p className="music-overline">Rap · exploración · libertad</p>
         <h2 id="music-title">Descubre la música <em>de CG SAMO.</em></h2>
         <p className="music-description">Un viaje por el rap y sus infinitas formas, sin etiquetas ni un lugar definitivo al que pertenecer.</p>
-        <a className="music-link" href="https://ffm.to/homeless-rappers" target="_blank" rel="noopener noreferrer">Conoce Homeless &amp; Rappers <span aria-hidden="true">↗</span></a>
+        <nav className="music-platforms" aria-label="Escucha HOMELESS & RAPPERS">
+          {musicPlatforms.map((platform) => <a
+            className="music-platform-link"
+            href={platform.url}
+            key={platform.name}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Escuchar en ${platform.name}`}
+          >
+            <img src={platform.icon} alt="" aria-hidden="true" loading="lazy" />
+            <span>{platform.name}</span>
+          </a>)}
+        </nav>
       </div>
       <div className="music-project">
         <span>Proyecto destacado</span>
@@ -151,11 +183,23 @@ function App() {
     </section>
     <footer className="site-footer" id="contacto">
       <span className="footer-brand">CG SAMO — HOMELESS &amp; RAPPERS</span>
-      <div className="footer-socials" aria-label="Redes sociales">
+      <div className="footer-socials" role="group" aria-label="Redes sociales">
         <span>Redes sociales</span>
-        <span className="footer-socials-pending">Enlaces próximamente</span>
+        <div className="footer-social-links">
+          {socialLinks.map((social) => <a
+            className="footer-social-link"
+            href={social.url}
+            key={social.name}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Visitar ${social.name} de CG SAMO`}
+          >
+            <img src={social.icon} alt="" aria-hidden="true" loading="lazy" />
+            <span>{social.name}</span>
+          </a>)}
+        </div>
       </div>
-      <span className="footer-credit">Creado por <a href="https://www.instagram.com/damian12_yiyi?exln=MTRnN3hyemRsY214aA%3D%3D&amp;utm_source=qr" target="_blank" rel="noopener noreferrer">Snow</a></span>
+      <span className="footer-credit">Creado y diseñado por <a href="https://www.instagram.com/damian12_yiyi?exln=MTRnN3hyemRsY214aA%3D%3D&amp;utm_source=qr" target="_blank" rel="noopener noreferrer">Snow</a></span>
     </footer>
   </main>
 }
@@ -427,12 +471,12 @@ function BuilderBlock() {
     </div>
     <div className="builder-workspace"><div className="builder-preview">
         <p className="drag-instruction" aria-live="polite"><span aria-hidden="true">✥</span> Arrastra la pieza activa para moverla</p>
-        <div className="builder-stage" ref={stageRef} onPointerDown={startStageGesture} onContextMenu={(event) => event.preventDefault()} aria-label="Composición interactiva. Arrastra la pieza activa para moverla y usa dos dedos para cambiar su tamaño." style={{ background: '#fff' }}>{frameAsset && <img className="builder-frame" src={frameAsset.url} alt="" aria-hidden="true" />}{Object.values(layers).map((layer) => {
+        <div className="builder-stage" ref={stageRef} onPointerDown={startStageGesture} onContextMenu={(event) => event.preventDefault()} aria-label="Composición interactiva. Arrastra la pieza activa para moverla y usa dos dedos para cambiar su tamaño." style={{ background: '#fff' }}>{frameAsset && <img className="builder-frame" src={frameAsset.url} alt="" aria-hidden="true" loading="lazy" decoding="async" />}{Object.values(layers).map((layer) => {
       const layerSize = layer.category === 'siluetas' ? silhouetteSize : layer.width
       const layerStyle = { left: `${layer.left}%`, top: `${layer.top}%`, width: `${layerSize}%`, zIndex: layer.zIndex, transform: `translate(-50%, -50%) rotate(${layer.rotate}deg)`, pointerEvents: 'auto' }
       return layer.category === 'siluetas'
         ? <div className={`builder-layer builder-silhouette-gradient ${dragging === layer.category ? 'is-dragging' : ''}`} key={layer.category} data-category={layer.category} role="img" aria-label="Silueta seleccionada" style={{ ...layerStyle, height: `${layerSize}%`, background: silhouetteGradient, WebkitMaskImage: `url("${layer.url}")`, maskImage: `url("${layer.url}")` }} onPointerDown={(event) => { event.preventDefault(); setActiveCategory(layer.category); setDragging(null) }} />
-        : <img className={`builder-layer is-draggable ${dragging === layer.category ? 'is-dragging' : ''}`} key={layer.category} data-category={layer.category} src={layer.url} alt={`${categoryLabels[layer.category]} seleccionados`} draggable="false" style={layerStyle} onDragStart={(event) => event.preventDefault()} onPointerDown={(event) => { event.preventDefault(); setActiveCategory(layer.category); setDragging(fixedCategories.has(layer.category) ? null : layer.category) }} />
+        : <img className={`builder-layer is-draggable ${dragging === layer.category ? 'is-dragging' : ''}`} key={layer.category} data-category={layer.category} src={layer.url} alt={`${categoryLabels[layer.category]} seleccionados`} draggable="false" loading="lazy" decoding="async" style={layerStyle} onDragStart={(event) => event.preventDefault()} onPointerDown={(event) => { event.preventDefault(); setActiveCategory(layer.category); setDragging(fixedCategories.has(layer.category) ? null : layer.category) }} />
     })}</div>
       <div className="mobile-builder-controls">
         <div className="mobile-builder-tabs" aria-label="Controles de composición">
@@ -452,17 +496,17 @@ function BuilderBlock() {
                 {categoryOrder.filter((category) => category !== 'siluetas').map((category) => {
                   const representative = catalog[category]?.[0]
                   return <button className={mobileAccessoryCategory === category ? 'is-active' : ''} key={category} type="button" aria-pressed={mobileAccessoryCategory === category} onClick={() => setActiveCategory(category)}>
-                    {representative && <span className="mobile-category-thumbnail"><img src={representative.url} alt="" /></span>}
+                    {representative && <span className="mobile-category-thumbnail"><img src={representative.url} alt="" loading="lazy" decoding="async" /></span>}
                     <span>{categoryLabels[category]}</span>
                   </button>
                 })}
               </div>
               <div className="mobile-drawer-assets" aria-label={`Piezas de ${categoryLabels[mobileAccessoryCategory]}`}>
-                {(catalog[mobileAccessoryCategory] ?? []).map((item) => <button className={`mobile-drawer-choice ${layers[mobileAccessoryCategory]?.id === item.id ? 'is-selected' : ''}`} key={item.id} type="button" aria-label={`${categoryLabels[mobileAccessoryCategory]} ${item.name.replace(/\.svg$/i, '')}`} aria-pressed={layers[mobileAccessoryCategory]?.id === item.id} onClick={() => { setActiveCategory(mobileAccessoryCategory); chooseAccessory(item, mobileAccessoryCategory); setMobileBuilderPanel(null) }}><img src={item.url} alt="" /></button>)}
+                {(catalog[mobileAccessoryCategory] ?? []).map((item) => <button className={`mobile-drawer-choice ${layers[mobileAccessoryCategory]?.id === item.id ? 'is-selected' : ''}`} key={item.id} type="button" aria-label={`${categoryLabels[mobileAccessoryCategory]} ${item.name.replace(/\.svg$/i, '')}`} aria-pressed={layers[mobileAccessoryCategory]?.id === item.id} onClick={() => { setActiveCategory(mobileAccessoryCategory); chooseAccessory(item, mobileAccessoryCategory); setMobileBuilderPanel(null) }}><img src={item.url} alt="" loading="lazy" decoding="async" /></button>)}
               </div>
             </>}
             {mobileBuilderPanel === 'siluetas' && <div className="mobile-drawer-assets mobile-silhouette-assets">
-              {(catalog.siluetas ?? []).map((item) => <button className={`mobile-drawer-choice ${layers.siluetas?.id === item.id ? 'is-selected' : ''}`} key={item.id} type="button" aria-label={`Silueta ${item.name.replace(/\.svg$/i, '')}`} aria-pressed={layers.siluetas?.id === item.id} onClick={() => { setActiveCategory('siluetas'); chooseAccessory(item, 'siluetas'); setMobileBuilderPanel(null) }}><img src={item.url} alt="" /></button>)}
+              {(catalog.siluetas ?? []).map((item) => <button className={`mobile-drawer-choice ${layers.siluetas?.id === item.id ? 'is-selected' : ''}`} key={item.id} type="button" aria-label={`Silueta ${item.name.replace(/\.svg$/i, '')}`} aria-pressed={layers.siluetas?.id === item.id} onClick={() => { setActiveCategory('siluetas'); chooseAccessory(item, 'siluetas'); setMobileBuilderPanel(null) }}><img src={item.url} alt="" loading="lazy" decoding="async" /></button>)}
             </div>}
             {mobileBuilderPanel === 'color' && <div className="mobile-silhouette-colors">
               <p>Elige los colores inicial y final del degradado aplicado a la silueta.</p>
@@ -500,7 +544,7 @@ function BuilderBlock() {
             {categoryOrder.map((category) => <button className={activeCategory === category ? 'is-active' : ''} key={category} type="button" aria-pressed={activeCategory === category} onClick={() => setActiveCategory(category)}>{categoryLabels[category]}</button>)}
           </div>
           <div className="asset-strip accessory-strip">
-            {activeCategoryAssets.map((item) => <button className={`asset-choice accessory-choice ${layers[activeCategory]?.id === item.id ? 'is-selected' : ''}`} key={item.id} type="button" aria-label={`${categoryLabels[activeCategory]} ${item.name.replace(/\.svg$/i, '')}`} aria-pressed={layers[activeCategory]?.id === item.id} onClick={() => chooseAccessory(item)}><img src={item.url} alt="" /></button>)}
+            {activeCategoryAssets.map((item) => <button className={`asset-choice accessory-choice ${layers[activeCategory]?.id === item.id ? 'is-selected' : ''}`} key={item.id} type="button" aria-label={`${categoryLabels[activeCategory]} ${item.name.replace(/\.svg$/i, '')}`} aria-pressed={layers[activeCategory]?.id === item.id} onClick={() => chooseAccessory(item)}><img src={item.url} alt="" loading="lazy" decoding="async" /></button>)}
           </div>
         </div>
         <div className="control-section">

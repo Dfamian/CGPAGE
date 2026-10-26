@@ -566,12 +566,11 @@ footer { border-top: 1px solid rgba(33, 25, 42, 0.35); display: flex; font-famil
 .music-content:hover h2 { transform: translateX(8px); }
 .music-content:hover h2 em { color: #ff9bd2; text-shadow: 0 0 28px rgba(255, 155, 210, 0.3); }
 .music-description { color: rgba(11, 4, 12, 0.72); font-size: large; line-height: 1.75; margin: 26px 0 0; max-width: 48ch; }
-.music-link { align-items: center; border: 1px solid transparent; border-bottom-color: rgba(243, 222, 255, 0.58); color: var(--paper); display: inline-flex; font-family: 'DM Mono', monospace; font-size: 0.72rem; gap: 20px; letter-spacing: 0.1em; margin-top: 34px; padding: 0 0 12px; text-decoration: none; text-transform: uppercase; transition: background-color 220ms ease, border-color 220ms ease, color 220ms ease, gap 220ms ease, padding 220ms ease, transform 220ms ease; }
-.music-link span { color: var(--acid); font-size: 1.1rem; transition: transform 220ms ease; }
-.music-link:hover,
-.music-link:focus-visible { background: var(--acid); border-color: var(--acid); border-radius: 3px; box-shadow: 0 8px 24px rgba(232, 255, 120, 0.2); color: var(--ink); gap: 28px; outline: none; padding: 12px 16px; transform: translateY(-3px); }
-.music-link:hover span,
-.music-link:focus-visible span { color: var(--ink); transform: translate(3px, -3px); }
+.music-platforms { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 34px; position: relative; z-index: 1; }
+.music-platform-link { align-items: center; background: rgba(248, 236, 250, 0.08); border: 1px solid rgba(248, 236, 250, 0.2); border-radius: 10px; color: var(--paper); display: inline-flex; font-family: 'DM Mono', monospace; font-size: 0.65rem; gap: 10px; letter-spacing: 0.04em; min-height: 58px; padding: 8px 12px; text-decoration: none; transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease, transform 180ms ease; }
+.music-platform-link img { background: #fff; border-radius: 7px; display: block; height: 40px; object-fit: contain; padding: 4px; width: 40px; }
+.music-platform-link:hover,
+.music-platform-link:focus-visible { background: var(--acid); border-color: var(--acid); color: var(--ink); outline: 2px solid var(--acid); outline-offset: 3px; transform: translateY(-3px); }
 .music-project { align-self: center; border-left: 1px solid rgba(248, 236, 250, 0.26); display: flex; flex-direction: column; gap: 18px; padding: 20px 0 20px clamp(24px, 4vw, 58px); position: relative; transition: border-color 260ms ease, transform 300ms cubic-bezier(0.2, 0.75, 0.25, 1); }
 .music-project::before { background: linear-gradient(var(--acid), #ff9bd2); content: ''; height: 0; left: -2px; position: absolute; top: 20px; transition: height 300ms ease; width: 3px; }
 .music-project:hover { border-color: rgba(255, 155, 210, 0.65); transform: translateX(8px); }
@@ -583,12 +582,16 @@ footer { border-top: 1px solid rgba(33, 25, 42, 0.35); display: flex; font-famil
 /* ===== Bloque 5: pie de página ===== */
 .site-footer { color: white; align-items: center; background: black; border-top: 1px solid rgba(33, 25, 42, 0.35); display: flex; flex-wrap: wrap; font-family: 'DM Mono', monospace; font-size: 0.65rem; gap: 20px 36px; justify-content: space-between; letter-spacing: 0.08em; min-height: 140px; padding: 28px clamp(20px, 5vw, 72px); text-transform: uppercase; }
 .footer-brand { font-weight: 500; }
-.footer-socials { align-items: flex-start; display: flex; flex-direction: column; gap: 8px; }
-.footer-socials-pending { color: rgba(33, 25, 42, 0.6); font-size: 0.58rem; }
+.footer-socials { align-items: center; display: flex; flex-wrap: wrap; gap: 14px; }
+.footer-social-links { align-items: center; display: flex; gap: 12px; }
+.footer-social-link { align-items: center; border-radius: 6px; color: white; display: inline-flex; gap: 7px; padding: 4px; text-decoration: none; transition: color 180ms ease, transform 180ms ease; }
+.footer-social-link img { background: white; border-radius: 5px; display: block; height: 30px; object-fit: contain; padding: 4px; width: 30px; }
+.footer-social-link:hover,
+.footer-social-link:focus-visible { color: #ff9bd2; outline: 2px solid #ff9bd2; outline-offset: 3px; transform: translateY(-3px); }
 .footer-credit { white-space: nowrap; }
-.footer-credit a { border-radius: 3px; color: #ad59bc; font-weight: 700; padding: 3px 5px; text-decoration: none; transition: background-color 180ms ease, color 180ms ease; }
+.footer-credit a { border-radius: 3px; color: #ad59bc; font-size: 0.78rem; font-weight: 700; padding: 3px 5px; text-decoration: none; transition: background-color 180ms ease, color 180ms ease, text-shadow 180ms ease; }
 .footer-credit a:hover,
-.footer-credit a:focus-visible { background: #ad59bc; color: white; outline: none; }
+.footer-credit a:focus-visible { background: #ad59bc; color: white; outline: none; text-shadow: 0 0 10px rgba(255, 155, 210, 0.75); }
 
 .gallery-block,
 .builder-block,
@@ -621,7 +624,8 @@ footer { border-top: 1px solid rgba(33, 25, 42, 0.35); display: flex; font-famil
   .music-block > .eyebrow { margin: 0; }
   .music-content h2 { font-size: clamp(3rem, 13vw, 4.6rem); }
   .music-description { margin-top: 20px; }
-  .music-link { margin-top: 28px; }
+  .music-platforms { gap: 10px; margin-top: 28px; }
+  .music-platform-link { flex: 1 1 145px; }
   .music-project { align-self: flex-start; margin-left: 4px; padding-left: 24px; }
   .project-copy { width: 100%; }
   .project-listen-link { margin-bottom: 32px; width: min(275px, 100%); }
@@ -631,6 +635,7 @@ footer { border-top: 1px solid rgba(33, 25, 42, 0.35); display: flex; font-famil
   .project-cover { align-self: center; justify-self: center; max-height: none; width: min(100%, 440px); }
   .music-content { width: 100%; }
   .site-footer { align-items: flex-start; flex-direction: column; gap: 20px; }
+  .footer-socials { align-items: flex-start; flex-direction: column; gap: 8px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -713,6 +718,7 @@ footer { border-top: 1px solid rgba(33, 25, 42, 0.35); display: flex; font-famil
   .mobile-builder-controls { display: block; }
   .mobile-builder-tabs { align-items: flex-end; display: flex; flex-direction: column; gap: 7px; position: absolute; right: 0; top: 50%; transform: translateY(-50%); z-index: 20; }
   .mobile-builder-tabs button { background: var(--ink); border: 1px solid var(--acid); border-radius: 10px 0 0 10px; box-shadow: -4px 4px 0 rgba(33, 25, 42, 0.18); color: var(--acid); cursor: pointer; font: 600 0.64rem 'DM Mono', monospace; height: 78px; letter-spacing: 0.08em; padding: 8px 7px; text-transform: uppercase; transition: background-color 180ms ease, color 180ms ease, transform 180ms ease, box-shadow 180ms ease; writing-mode: vertical-rl; }
+  .mobile-builder-tabs button:nth-child(2) { height: 100px; }
   .mobile-builder-tabs button:hover,
   .mobile-builder-tabs button:focus-visible,
   .mobile-builder-tabs button[aria-expanded="true"] { background: var(--acid); box-shadow: -7px 5px 0 rgba(33, 25, 42, 0.28); color: var(--ink); outline: none; transform: translateX(-4px); }
